@@ -6,9 +6,10 @@
 #include <ESP8266HTTPClient.h>
 
 #include "global.h"
-#include "webpage.h"
+#include "resources.h"
 #include "time.h"
 #include "camera.h"
+#include "intervalometer.h"
 
 extern void init_server();
 

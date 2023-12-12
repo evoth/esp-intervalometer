@@ -1,4 +1,5 @@
 #include "server.h"
+#include "intervalometer.h"
 
 void setup()
 {
@@ -10,4 +11,5 @@ void setup()
 void loop()
 {
   loop_process_request();
+  loopIntervalometer();
 }

@@ -5,6 +5,11 @@
 
 #include "global.h"
 
-extern void cameraConnect(AsyncWebServerRequest *request);
+extern bool cameraConnected;
+extern int errorCode;
+extern char errorMsg[256];
+
+extern void cameraConnect(AsyncWebServerRequest *request, DynamicJsonDocument doc);
+extern void triggerShutter();
 
 #endif

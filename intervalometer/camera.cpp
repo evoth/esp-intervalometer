@@ -1,7 +1,11 @@
 #include "camera.h"
 
-const char *apiUrl = "http://192.168.4.7:8080/ccapi";
+char apiUrl[64];
+bool cameraConnected = false;
+const char *apiUrlTemplate = "http://%s:8080/ccapi";
 const char *apiVersion = "ver100";
+int errorCode = 200;
+char errorMsg[256];
 
 // Attempts to start an HTTP connection and request the given url
 // Sends error message and returns false if error; otherwise returns true
@@ -29,11 +33,8 @@ bool connect(AsyncWebServerRequest *request, const char *url) {
   if (httpCode != HTTP_CODE_OK) {
     char msg[256];
     if (http.getSize() > 0) {
-      // CCAPI error message from response JSON
       String payload = http.getString();
-      DynamicJsonDocument doc(256);
-      deserializeJson(doc, payload);
-      snprintf(msg, sizeof(msg), "%s at %s", doc["message"], url);
+      snprintf(msg, sizeof(msg), "Error payload from %s: %s", url, payload.c_str());
     } else {
       snprintf(msg, sizeof(msg), "Error %d at %s", httpCode, url);
     }
@@ -45,11 +46,67 @@ bool connect(AsyncWebServerRequest *request, const char *url) {
   return true;
 }
 
+bool post(const char *url, char *body) {
+  // HTTP connection could not be started
+  if (!http.begin(client, url)) {
+    snprintf(errorMsg, sizeof(errorMsg), "Could not connect to %s", url);
+    errorCode = 502;
+    return false;
+  }
+
+  int httpCode = http.POST(body);
+
+  // HTTP client error
+  if (httpCode < 0) {
+    snprintf(errorMsg, sizeof(errorMsg), "%s when connecting to %s", http.errorToString(httpCode).c_str(), url);
+    errorCode = 502;
+    http.end();
+    return false;
+  }
+
+  // HTTP failure code
+  if (httpCode != HTTP_CODE_OK) {
+    if (http.getSize() > 0) {
+      String payload = http.getString();
+      snprintf(errorMsg, sizeof(errorMsg), "Error payload from %s: %s", url, payload.c_str());
+    } else {
+      snprintf(errorMsg, sizeof(errorMsg), "Error %d at %s", httpCode, url);
+    }
+    errorCode = 502;
+    http.end();
+    return false;
+  }
+
+  return true;
+}
+
 // Sends a GET request to base CCAPI URL to establish connection
-void cameraConnect(AsyncWebServerRequest *request) {
-  if (!connect(request, apiUrl)) return;
+void cameraConnect(AsyncWebServerRequest *request, DynamicJsonDocument doc) {
+  String cameraIP = doc["cameraIP"];
+  snprintf(apiUrl, sizeof(apiUrl), apiUrlTemplate, cameraIP.c_str());
+
+  if (!connect(request, apiUrl)) {
+    cameraConnected = false;
+    return;
+  }
   
   request->send(200, "text/plain", "Connection to camera successful.");
+
+  http.end();
+
+  cameraConnected = true;
+}
+
+// Sends a GET request to base CCAPI URL to establish connection
+void triggerShutter() {
+  char endpointUrl[128];
+  snprintf(endpointUrl, sizeof(endpointUrl), "%s/ver100/shooting/control/shutterbutton", apiUrl);
+
+  char body[] = "{\"af\": false}";
+  if (!post(endpointUrl, body)) return;
+
+  errorCode = 200;
+  snprintf(errorMsg, sizeof(errorMsg), "Successfully triggered shutter.");
 
   http.end();
 }
