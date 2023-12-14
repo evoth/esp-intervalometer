@@ -3,7 +3,7 @@
 
 #include "global.h"
 
-extern char apiUrl[64];
+extern char cameraIP[32];
 extern bool cameraConnected;
 
 extern void cameraConnect(DynamicJsonDocument doc);

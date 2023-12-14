@@ -44,17 +44,21 @@ void initWebServer()
 
 void sendStatus() {
   DynamicJsonDocument status(1024);
+  status["statusCode"] = statusCode;
   status["statusMsg"] = statusMsg;
   status["sec"] = now();
   status["ms"] = millisecond();
-  status["numShots"] = numShots;
-  status["statusCode"] = statusCode;
-  status["statusMsg"] = statusMsg;
   status["cameraConnected"] = cameraConnected;
-  status["apiUrl"] = apiUrl;
+  status["cameraIP"] = cameraIP;
+  status["intervalSec"] = intervalSec;
+  status["isRunning"] = isRunning;
+  status["numShots"] = numShots;
   String statusText;
   serializeJson(status, statusText);
+  Serial.println("Sending:");
+  Serial.println(statusText);
   webSocket.broadcastTXT(statusText);
+  Serial.println("Sent.");
 }
 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {

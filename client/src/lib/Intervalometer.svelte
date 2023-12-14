@@ -1,77 +1,20 @@
 <script>
-  import { espIP } from "../stores.js";
-  let intervalSec = 35;
-  let status = "";
-  let isError = false;
-  let isRunning = false;
-  let isLoading = false;
-  const start = async () => {
-    isLoading = true;
-    try {
-      const response = await fetch(`${$espIP}/start`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          intervalSec: intervalSec,
-        }),
-      });
-      if (response.ok) {
-        status = await response.text();
-        isRunning = true;
-        isError = false;
-      } else {
-        status = `${response.status} error, ${await response.text()}`;
-        isError = true;
-      }
-    } catch {
-      status = `No response from ESP`;
-      isError = true;
-    }
-    isLoading = false;
+  import { state, isLoading, socket } from "../stores.js";
+  let intervalSec, isUpdating;
+
+  state.subscribe((value) => (intervalSec = value.intervalSec || intervalSec));
+  isLoading.subscribe((value) => (isUpdating = value && isUpdating));
+
+  const start = () => {
+    $socket.send(
+      JSON.stringify({ command: "start", body: { intervalSec: intervalSec } })
+    );
+    isUpdating = $isLoading = true;
   };
 
-  const stop = async () => {
-    isLoading = true;
-    try {
-      const response = await fetch(`${$espIP}/stop`, {
-        method: "GET",
-      });
-      if (response.ok) {
-        status = await response.text();
-        isRunning = false;
-        isError = false;
-      } else {
-        status = `${response.status} error, ${await response.text()}`;
-        isError = true;
-      }
-    } catch {
-      status = `No response from ESP`;
-      isError = true;
-    }
-    isLoading = false;
-  };
-
-  const refresh = async () => {
-    isLoading = true;
-    try {
-      const response = await fetch(`${$espIP}/getStatus`, {
-        method: "GET",
-      });
-      if (response.ok) {
-        const data = await response.json();
-        status = `Number of shots: ${data.numShots}\nStatus code: ${data.errorCode}\nStatus message: ${data.errorMsg}`;
-        isError = false;
-      } else {
-        status = `${response.status} error, ${await response.text()}`;
-        isError = true;
-      }
-    } catch {
-      status = `No response from ESP`;
-      isError = true;
-    }
-    isLoading = false;
+  const stop = () => {
+    $socket.send(JSON.stringify({ command: "stop", body: {} }));
+    isUpdating = $isLoading = true;
   };
 </script>
 
@@ -82,18 +25,19 @@
     bind:value={intervalSec}
     placeholder="Interval in seconds"
   />
-  {#if isRunning}
+  {#if $state.isRunning}
     <button on:click={stop}> Stop </button>
   {:else}
     <button on:click={start}> Start </button>
   {/if}
-  <button on:click={refresh}> Refresh status </button>
 
-  {#if isLoading}
+  {#if isUpdating}
     <p>Loading...</p>
-  {:else if isError}
-    <p class="warning">{status}</p>
+  {:else if $state.statusCode != 200}
+    <p class="warning">{`${$state.statusCode} error, ${$state.statusMsg}`}</p>
   {:else}
-    <p class="success">{status}</p>
+    <p class="success">
+      {`Number of shots: ${$state.numShots}\nStatus code: ${$state.statusCode}\nStatus message: ${$state.statusMsg}`}
+    </p>
   {/if}
 </div>

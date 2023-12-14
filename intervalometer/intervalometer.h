@@ -2,6 +2,7 @@
 #define INTERVALOMETER_H
 
 #include "camera.h"
+#include "server.h"
 
 extern int intervalSec;
 extern int numShots;

@@ -4,6 +4,7 @@
 #include <ESP8266WiFi.h>
 #include <ESPAsyncWebServer.h>
 #include <ESP8266HTTPClient.h>
+// ENABLE ASYNC MODE IN WebSockets.h TO AVOID BLOCKING
 #include <WebSocketsServer.h>
 #include <ArduinoJson.h>
 

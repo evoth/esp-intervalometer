@@ -8,7 +8,7 @@
 #include "intervalometer.h"
 
 extern void initServer();
-
 extern void loopProcessRequest();
+extern void sendStatus();
 
 #endif

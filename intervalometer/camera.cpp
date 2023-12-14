@@ -1,5 +1,6 @@
 #include "camera.h"
 
+char cameraIP[32];
 char apiUrl[64];
 bool cameraConnected = false;
 const char *apiUrlTemplate = "http://%s:8080/ccapi";
@@ -44,8 +45,9 @@ void request(const char *url, std::function<int()> action, std::function<void()>
 
 // Sends a GET request to base CCAPI URL to establish connection
 void cameraConnect(DynamicJsonDocument doc) {
-  String cameraIP = doc["cameraIP"];
-  snprintf(apiUrl, sizeof(apiUrl), apiUrlTemplate, cameraIP.c_str());
+  String cameraIPTemp = doc["cameraIP"];
+  snprintf(cameraIP, sizeof(cameraIP), cameraIPTemp.c_str());
+  snprintf(apiUrl, sizeof(apiUrl), apiUrlTemplate, cameraIP);
 
   request(apiUrl,
     []() {

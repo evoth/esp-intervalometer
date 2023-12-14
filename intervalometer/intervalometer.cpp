@@ -12,6 +12,7 @@ void capture() {
   if (statusCode == 200) {
     numShots++;
   }
+  sendStatus();
 }
 
 void startIntervalometer(DynamicJsonDocument doc) {

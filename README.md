@@ -7,3 +7,4 @@ TODO
 - Reduce use of String
 - Reduce global variables
 - COMMENTS!
+- Add ability to collapse sections
