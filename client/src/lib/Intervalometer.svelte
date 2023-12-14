@@ -34,7 +34,7 @@
   {#if isUpdating}
     <p>Loading...</p>
   {:else if $state.statusCode != 200}
-    <p class="warning">{`${$state.statusCode} error, ${$state.statusMsg}`}</p>
+    <p class="error">{`${$state.statusCode} error, ${$state.statusMsg}`}</p>
   {:else}
     <p class="success">
       {`Number of shots: ${$state.numShots}\nStatus code: ${$state.statusCode}\nStatus message: ${$state.statusMsg}`}

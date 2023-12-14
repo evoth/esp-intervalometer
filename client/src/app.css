@@ -106,6 +106,9 @@ input:focus {
     color: var(--green-5);
 }
 .warning {
+    color: var(--yellow-5);
+}
+.error {
     color: var(--red-5);
 }
 

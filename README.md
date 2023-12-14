@@ -8,3 +8,4 @@ TODO
 - Reduce global variables
 - COMMENTS!
 - Add ability to collapse sections
+- Better error handling (count number, notify user, etc.)

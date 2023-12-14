@@ -55,8 +55,7 @@ void sendStatus() {
   status["numShots"] = numShots;
   String statusText;
   serializeJson(status, statusText);
-  Serial.println("Sending:");
-  Serial.println(statusText);
+  Serial.print("Sending status... ");
   webSocket.broadcastTXT(statusText);
   Serial.println("Sent.");
 }

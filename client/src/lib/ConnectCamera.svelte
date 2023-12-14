@@ -22,6 +22,6 @@
   {:else if $state.cameraConnected}
     <p class="success">Connected to {$state.cameraIP}</p>
   {:else}
-    <p class="warning">Disconnected</p>
+    <p class="error">Disconnected</p>
   {/if}
 </div>

@@ -1,7 +1,8 @@
 <script>
   import { state, socket, isLoading, espIP, isConnected } from "../stores.js";
-  let espIPInput = $espIP, isConnecting;
-  
+  let espIPInput = $espIP,
+    isConnecting;
+
   const connect = () => {
     $espIP = espIPInput;
     $socket?.close();
@@ -21,19 +22,26 @@
     isConnecting = true;
   };
 
+  const disconnect = () => {
+    $socket?.close();
+  };
+
   connect();
 </script>
-  
+
 <div class="section">
   <h2>Connect to ESP8266</h2>
   <input bind:value={espIPInput} placeholder="ESP8266 IP address" />
-  <button on:click={connect}> Connect </button>
+  {#if !$isConnected || espIPInput != $espIP}
+    <button on:click={connect}> Connect </button>
+  {:else}
+    <button on:click={disconnect}> Disconnect </button>
+  {/if}
   {#if isConnecting}
     <p>Connecting...</p>
   {:else if $isConnected}
     <p class="success">Connected to {$espIP}</p>
   {:else}
-    <p class="warning">Disconnected</p>
+    <p class="error">Disconnected</p>
   {/if}
 </div>
-  

@@ -28,6 +28,8 @@
       --green-95: var(--light-green);
       --red-5: var(--dark-red);
       --red-95: var(--light-red);
+      --yellow-5: var(--dark-yellow);
+      --yellow-95: var(--light-yellow);
     }
   </style>
 {:else}
@@ -44,6 +46,8 @@
       --green-95: var(--dark-green);
       --red-5: var(--light-red);
       --red-95: var(--dark-red);
+      --yellow-5: var(--light-yellow);
+      --yellow-95: var(--dark-yellow);
     }
   </style>
 {/if}
@@ -61,6 +65,8 @@
     --dark-red: #b70000;
     --light-green: #87ff85;
     --dark-green: #028100;
+    --light-yellow: #fffd85;
+    --dark-yellow: #768500;
   }
 
   button {
