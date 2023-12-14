@@ -7,6 +7,7 @@
 
   color: var(--gray-5);
   background-color: var(--gray-95);
+  transition: background-color 0.2s, color 0.2s;
 }
 
 *, *:before, *:after {
@@ -57,6 +58,7 @@ main {
     display: flex;
     flex-direction: column;
     row-gap:16px;
+    transition: border-color 0.2s;
 }
 
 #app {
@@ -76,7 +78,7 @@ button {
   color: var(--gray-95);
   background-color: var(--gray-5);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, color 0.2s;
 }
 button:hover {
     background-color: var(--gray-35);
@@ -94,6 +96,7 @@ input {
     font-family: inherit;
     color: var(--gray-5);
     background-color: var(--gray-85);
+    transition: background-color 0.2s, color 0.2s;
 }
 input:hover {
     border-color: var(--gray-65);
@@ -114,4 +117,5 @@ input:focus {
 
 p {
     white-space: pre-line;
+    transition: color 0.2s;
 }
