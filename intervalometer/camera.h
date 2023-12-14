@@ -1,15 +1,12 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <ArduinoJson.h>
-
 #include "global.h"
 
+extern char apiUrl[64];
 extern bool cameraConnected;
-extern int errorCode;
-extern char errorMsg[256];
 
-extern void cameraConnect(AsyncWebServerRequest *request, DynamicJsonDocument doc);
+extern void cameraConnect(DynamicJsonDocument doc);
 extern void triggerShutter();
 
 #endif

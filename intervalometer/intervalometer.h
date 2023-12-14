@@ -3,8 +3,12 @@
 
 #include "camera.h"
 
-extern void startIntervalometer(AsyncWebServerRequest *request, DynamicJsonDocument doc);
-extern void stopIntervalometer(AsyncWebServerRequest *request);
+extern int intervalSec;
+extern int numShots;
+extern bool isRunning;
+
+extern void startIntervalometer(DynamicJsonDocument doc);
+extern void stopIntervalometer();
 extern void getIntervalometerStatus(AsyncWebServerRequest *request);
 extern void loopIntervalometer();
 

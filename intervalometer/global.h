@@ -3,12 +3,16 @@
 
 #include <ESP8266WiFi.h>
 #include <ESPAsyncWebServer.h>
-#include <ESPAsyncUDP.h>
 #include <ESP8266HTTPClient.h>
+#include <WebSocketsServer.h>
+#include <ArduinoJson.h>
 
 extern AsyncWebServer server;
-extern AsyncUDP udp;
 extern WiFiClient client;
 extern HTTPClient http;
+extern WebSocketsServer webSocket;
+
+extern int statusCode;
+extern char statusMsg[256];
 
 #endif

@@ -1,10 +1,9 @@
 #include "server.h"
 
-AsyncWebServerRequest *request;
-DynamicJsonDocument doc(1024);
-bool newRequest;
+DynamicJsonDocument msg(1024);
+bool newMsg = false;
 
-void init_ap()
+void initAP()
 {
   const char *ssid = "ESP8266_AP";
   const char *password = "defgecd7";
@@ -16,13 +15,7 @@ void init_ap()
   Serial.println(WiFi.softAPIP());
 }
 
-void queue_loop_request(AsyncWebServerRequest *req, uint8_t *data, size_t len, size_t index, size_t total) {
-  request = req;
-  newRequest = true;
-  deserializeJson(doc, data);
-}
-
-void init_web_server()
+void initWebServer()
 {
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *req){
     req->send(200, "text/html", index_html);
@@ -32,21 +25,12 @@ void init_web_server()
     req->send(200, "image/svg+xml", icon_svg);
   });
 
-  server.on("/setTime", HTTP_POST, [](AsyncWebServerRequest *req) {}, NULL, set_time);
-
-  server.on("/getTime", HTTP_GET, get_time);
-
-  server.on("/connect", HTTP_POST, [](AsyncWebServerRequest *req) {}, NULL, queue_loop_request);
-
-  server.on("/start", HTTP_POST, [](AsyncWebServerRequest *req) {}, NULL, queue_loop_request);
-
-  server.on("/stop", HTTP_GET, stopIntervalometer);
-
-  server.on("/getStatus", HTTP_GET, getIntervalometerStatus);
-
   server.onNotFound([](AsyncWebServerRequest *req){
-    request = req;
-    newRequest = true;
+    if (req->method() == HTTP_OPTIONS) {
+      req->send(200);
+    } else {
+      req->send(404, "text/plain", "Not found");
+    }
   });
 
   // CORS
@@ -58,26 +42,75 @@ void init_web_server()
   server.begin();
 }
 
-void init_server() {
-  init_ap();
-  init_web_server();
+void sendStatus() {
+  DynamicJsonDocument status(1024);
+  status["statusMsg"] = statusMsg;
+  status["sec"] = now();
+  status["ms"] = millisecond();
+  status["numShots"] = numShots;
+  status["statusCode"] = statusCode;
+  status["statusMsg"] = statusMsg;
+  status["cameraConnected"] = cameraConnected;
+  status["apiUrl"] = apiUrl;
+  String statusText;
+  serializeJson(status, statusText);
+  webSocket.broadcastTXT(statusText);
 }
 
-void loop_process_request() {
-  if (!newRequest) return;
+void webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
+  switch (type) {
+    case WStype_DISCONNECTED:
+      Serial.printf("[%u] Disconnected!\n", num);
+      break;
+    case WStype_CONNECTED:
+      {
+        IPAddress ip = webSocket.remoteIP(num);
+        Serial.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
+        sendStatus();
+      }
+      break;
+    case WStype_TEXT:
+      Serial.printf("[%u] get Text: %s\n", num, payload);
+      newMsg = true;
+      deserializeJson(msg, (const char*) payload);
+      break;
+  }
+}
 
-  WebRequestMethodComposite method = request->method();
-  String url = request->url();
+void initWebSockerServer() {
+  webSocket.begin();
+  webSocket.onEvent(webSocketEvent);
+}
 
-  if (method == HTTP_POST && url == "/connect") {
-    cameraConnect(request, doc);
-  } else if (method == HTTP_POST && url == "/start") {
-    startIntervalometer(request, doc);
-  } else if (method == HTTP_OPTIONS) {
-    request->send(200);
+void initServer() {
+  initAP();
+  initWebServer();
+  initWebSockerServer();
+}
+
+void loopProcessRequest() {
+  if (!newMsg) return;
+
+  String command = msg["command"];
+
+  char bodyText[1024];
+  serializeJson(msg["body"], bodyText);
+  DynamicJsonDocument body(1024);
+  deserializeJson(body, bodyText);
+
+  if (command == "setTime") {
+    setEspTime(body);
+  } else if (command == "connect") {
+    cameraConnect(body);
+  } else if (command == "start") {
+    startIntervalometer(body);
+  } else if (command == "stop") {
+    stopIntervalometer();
   } else {
-    request->send(404, "text/plain", "Not found");
+    statusCode = 0;
+    snprintf(statusMsg, sizeof(statusMsg), "Unknown command.");
   }
 
-  newRequest = false;
+  sendStatus();
+  newMsg = false;
 }
