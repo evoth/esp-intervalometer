@@ -73,6 +73,8 @@
     background-color: transparent;
     padding: 8px 8px;
     min-width: 48px;
+    display: flex;
+    align-items: center;
   }
   button:hover {
     background-color: var(--gray-65);

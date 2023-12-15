@@ -49,18 +49,6 @@ main {
     row-gap: 32px;
 }
 
-.section {
-    border-style: solid;
-    border-width: 2px;
-    border-color: var(--gray-50);
-    border-radius: 16px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    row-gap:16px;
-    transition: border-color 0.2s;
-}
-
 #app {
   width: 100%;
   max-width: 480px;
@@ -96,7 +84,7 @@ input {
     font-family: inherit;
     color: var(--gray-5);
     background-color: var(--gray-85);
-    transition: background-color 0.2s, color 0.2s;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 input:hover {
     border-color: var(--gray-65);

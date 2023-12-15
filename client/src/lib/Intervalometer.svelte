@@ -1,5 +1,6 @@
 <script>
   import { state, isLoading, socket } from "../stores.js";
+  import Section from "./Section.svelte";
   let intervalSec, isUpdating;
 
   state.subscribe((value) => (intervalSec = value.intervalSec || intervalSec));
@@ -18,8 +19,8 @@
   };
 </script>
 
-<div class="section">
-  <h2>Intervalometer</h2>
+<Section name="intervalometer">
+  <h2 slot="heading">Intervalometer</h2>
   <input
     type="number"
     bind:value={intervalSec}
@@ -40,4 +41,4 @@
       {`Number of shots: ${$state.numShots}\nStatus code: ${$state.statusCode}\nStatus message: ${$state.statusMsg}`}
     </p>
   {/if}
-</div>
+</Section>

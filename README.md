@@ -7,5 +7,6 @@ TODO
 - Reduce use of String
 - Reduce global variables
 - COMMENTS!
-- Add ability to collapse sections
 - Better error handling (count number, notify user, etc.)
+- Less global CSS, move to components
+- Do theme in a more "correct" way with conditional classes

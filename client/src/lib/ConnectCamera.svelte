@@ -1,5 +1,6 @@
 <script>
   import { state, socket, isLoading } from "../stores.js";
+  import Section from "./Section.svelte";
   let cameraIP, isConnecting;
 
   state.subscribe((value) => (cameraIP = value.cameraIP || cameraIP));
@@ -13,8 +14,8 @@
   };
 </script>
 
-<div class="section">
-  <h2>Connect camera</h2>
+<Section name="connect-camera">
+  <h2 slot="heading">Connect camera</h2>
   <input bind:value={cameraIP} placeholder="Camera IP address" />
   <button on:click={connect}> Connect </button>
   {#if isConnecting}
@@ -24,4 +25,4 @@
   {:else}
     <p class="error">Disconnected</p>
   {/if}
-</div>
+</Section>
