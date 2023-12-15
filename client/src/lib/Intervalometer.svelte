@@ -34,11 +34,9 @@
 
   {#if isUpdating}
     <p>Loading...</p>
-  {:else if $state.statusCode != 200}
-    <p class="error">{`${$state.statusCode} error, ${$state.statusMsg}`}</p>
+  {:else if $state.isRunning}
+    <p>Intervalometer running...</p>
   {:else}
-    <p class="success">
-      {`Number of shots: ${$state.numShots}\nStatus code: ${$state.statusCode}\nStatus message: ${$state.statusMsg}`}
-    </p>
+    <p>Intervalometer stopped.</p>
   {/if}
 </Section>

@@ -5,6 +5,12 @@ int numShots;
 bool isRunning = false;
 unsigned long lastTime;
 
+unsigned long timeUntilNext() {
+  unsigned long timeSinceLast = millis() - lastTime;
+  if (timeSinceLast >= intervalSec * 1000) return 0;
+  return (intervalSec * 1000) - timeSinceLast;
+}
+
 void capture() {
   // TODO: quantize timing
   lastTime = millis();
@@ -32,6 +38,6 @@ void stopIntervalometer() {
 
 void loopIntervalometer() {
   if (!isRunning) return;
-  if ((millis() - lastTime) / 1000 < intervalSec) return;
+  if (timeUntilNext() > 0) return;
   capture();
 }

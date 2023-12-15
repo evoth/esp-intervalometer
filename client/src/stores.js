@@ -12,6 +12,7 @@ export const state = writable({
   isRunning: false,
   cameraIP: "192.168.4.7",
   numShots: 0,
+  timeUntilNext: 0,
 });
 export const isLoading = writable(false);
 export const socket = writable();

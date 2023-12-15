@@ -53,6 +53,7 @@ void sendStatus() {
   status["intervalSec"] = intervalSec;
   status["isRunning"] = isRunning;
   status["numShots"] = numShots;
+  status["timeUntilNext"] = timeUntilNext();
   String statusText;
   serializeJson(status, statusText);
   Serial.print("Sending status... ");

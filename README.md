@@ -10,3 +10,4 @@ TODO
 - Better error handling (count number, notify user, etc.)
 - Less global CSS, move to components
 - Do theme in a more "correct" way with conditional classes
+- Make entire section heading clickable
