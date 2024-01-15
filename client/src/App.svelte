@@ -8,9 +8,7 @@
 </script>
 
 <main>
-  <div
-    style="display: flex; flex-direction: row; justify-content: space-between; column-gap: 8px"
-  >
+  <div>
     <h1>ESP8266 Intervalometer</h1>
     <ThemeToggle />
   </div>
@@ -23,3 +21,18 @@
     {/if}
   {/if}
 </main>
+
+<style>
+  div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: 8px;
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    row-gap: 32px;
+  }
+</style>

@@ -19,9 +19,15 @@
 </script>
 
 <div class="section">
-  <div class="heading">
+  <button
+    class="heading"
+    on:click={toggle}
+    title={isExpanded ? "Collapse section" : "Expand section"}
+    aria-expanded={isExpanded}
+    aria-controls={`${name}-body`}
+  >
     <slot name="heading" />
-    <button on:click={toggle}>
+    <div class="arrow-container">
       <svg
         class={isExpanded ? "rotated" : ""}
         xmlns="http://www.w3.org/2000/svg"
@@ -34,10 +40,10 @@
         stroke-linecap="round"
         stroke-linejoin="round"><path d="M15 18l-6-6 6-6" /></svg
       >
-    </button>
-  </div>
+    </div>
+  </button>
   {#if isExpanded}
-    <div class="body" transition:slide={{ duration: 300 }}>
+    <div id={`${name}-body`} class="body" transition:slide={{ duration: 300 }}>
       <slot />
     </div>
   {/if}
@@ -62,24 +68,29 @@
     padding-bottom: 16px;
   }
   .heading {
+    all: unset;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding-bottom: 16px;
   }
-  button {
-    color: inherit;
+
+  .arrow-container {
+    transition: background-color 0.2s;
     background-color: transparent;
+    border-radius: 8px;
     padding: 4px 4px;
     display: flex;
     align-items: center;
   }
-  button:hover {
+  .arrow-container:hover {
     background-color: var(--gray-65);
   }
+
   svg {
     transition: transform 0.3s;
+    color: inherit;
   }
   svg.rotated {
     transform: rotate(-90deg);
