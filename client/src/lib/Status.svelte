@@ -5,7 +5,7 @@
   const statusString = () =>
     `Status code: ${$state.statusCode}\nStatus message: ${$state.statusMsg}`;
 
-  let timeReceived = Date.now();
+  let timeReceived;
   let timeUntilNext = "0";
   let interval;
   state.subscribe((value) => {

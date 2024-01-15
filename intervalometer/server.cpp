@@ -18,11 +18,11 @@ void initAP()
 void initWebServer()
 {
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *req){
-    req->send(200, "text/html", index_html);
+    req->send_P(200, "text/html", index_html);
   });
 
   server.on("/icon.svg", HTTP_GET, [](AsyncWebServerRequest *req){
-    req->send(200, "image/svg+xml", icon_svg);
+    req->send_P(200, "image/svg+xml", icon_svg);
   });
 
   server.onNotFound([](AsyncWebServerRequest *req){
