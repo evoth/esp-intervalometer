@@ -1,9 +1,8 @@
 #ifndef TIME_H
 #define TIME_H
 
-#include <TimeLib.h>
-
 #include "global.h"
+#include <TimeLib.h>
 
 extern void setEspTime(DynamicJsonDocument doc);
 

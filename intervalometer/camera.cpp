@@ -1,8 +1,11 @@
 #include "camera.h"
+#include <cstring>
 
 char cameraIP[32];
 char apiUrl[64];
 bool cameraConnected = false;
+bool bulbMode = false;
+char expSetting[16];
 const char *apiUrlTemplate = "http://%s:8080/ccapi";
 
 // Helper function that sets up HTTP connection before running the "action" function
@@ -85,4 +88,138 @@ void triggerShutter() {
       }
     }
   );
+}
+
+// Sends a POST request to simulate pressing and holding the shutter
+void pressShutter() {
+  char endpointUrl[128];
+  snprintf(endpointUrl, sizeof(endpointUrl), "%s/ver100/shooting/control/shutterbutton/manual", apiUrl);
+
+  request(endpointUrl,
+    []() {
+      char body[] = "{\"action\":\"full_press\",\"af\": false}";
+      return http.POST(body);
+    },
+    []() {
+      snprintf(statusMsg, sizeof(statusMsg), "Successfully pressed shutter.");
+    },
+    []() {
+      if (statusCode < 0) {
+        cameraConnected = false;
+      }
+    }
+  );
+}
+
+// Sends a POST request to simulate releasing the shutter
+void releaseShutter() {
+  char endpointUrl[128];
+  snprintf(endpointUrl, sizeof(endpointUrl), "%s/ver100/shooting/control/shutterbutton/manual", apiUrl);
+
+  request(endpointUrl,
+    []() {
+      char body[] = "{\"action\":\"release\",\"af\": false}";
+      return http.POST(body);
+    },
+    []() {
+      snprintf(statusMsg, sizeof(statusMsg), "Successfully released shutter.");
+    },
+    []() {
+      if (statusCode < 0) {
+        cameraConnected = false;
+      }
+    }
+  );
+}
+
+// Retreives shutter speed setting and sets variables appropriately
+void getBulb() {
+  char endpointUrl[128];
+  snprintf(endpointUrl, sizeof(endpointUrl), "%s/ver100/shooting/settings/tv", apiUrl);
+
+  request(endpointUrl,
+    []() {
+      return http.GET();
+    },
+    []() {
+      DynamicJsonDocument response(1024);
+      deserializeJson(response, http.getString().c_str());
+      if (response["value"] == String("bulb")) {
+        bulbMode = true;
+        // If we haven't yet stored an exposure setting, choose one from the ability list
+        if (expSetting[0] == '\0') {
+          snprintf(expSetting, sizeof(expSetting), response["ability"][1].as<String>().c_str());
+        }
+      } else {
+        bulbMode = false;
+        // Store exposure setting for future use
+        snprintf(expSetting, sizeof(expSetting), response["value"].as<String>().c_str());
+      }
+    },
+    []() {
+      bulbMode = false;
+    }
+  );
+}
+
+// Set camera exposure to bulb
+void enableBulb() {
+  // Store current exposure setting
+  getBulb();
+
+  char endpointUrl[128];
+  snprintf(endpointUrl, sizeof(endpointUrl), "%s/ver100/shooting/settings/tv", apiUrl);
+
+  request(endpointUrl,
+    []() {
+      char body[] = "{\"value\": \"bulb\"}";
+      return http.PUT(body);
+    },
+    []() {
+      snprintf(statusMsg, sizeof(statusMsg), "Successfully enabled bulb mode.");
+      bulbMode = true;
+    },
+    []() {}
+  );
+}
+
+// Set camera exposure to previous setting
+void disableBulb() {
+  char endpointUrl[128];
+  snprintf(endpointUrl, sizeof(endpointUrl), "%s/ver100/shooting/settings/tv", apiUrl);
+
+  request(endpointUrl,
+    []() {
+      DynamicJsonDocument body(32);
+      body["value"] = expSetting;
+      String bodyText;
+      serializeJson(body, bodyText);
+      return http.PUT(bodyText);
+    },
+    []() {
+      snprintf(statusMsg, sizeof(statusMsg), "Successfully disabled bulb mode.");
+      bulbMode = false;
+    },
+    []() {}
+  );
+}
+
+// Return exposure time in seconds from expSetting
+// Example strings:
+//   30"
+//   2"5
+//   1/60
+float parseExpSetting() {
+  float exp = atoi(expSetting);
+  int len = strlen(expSetting);
+  char *delim = strchr(expSetting, '"');
+  if (delim == NULL) {
+    delim = strchr(expSetting, '/');
+    if (delim != NULL) {
+      exp /= atoi(delim + 1);
+    }
+  } else if (delim - expSetting < len - 1) {
+    exp += atoi(delim + 1) / 10.0f;
+  }
+  return exp;
 }

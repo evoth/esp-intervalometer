@@ -8,11 +8,14 @@ export const state = writable({
   sec: 0,
   ms: 0,
   cameraConnected: false,
-  intervalSec: 35,
+  intervalSec: 35.0,
   isRunning: false,
   cameraIP: "192.168.4.7",
   numShots: 0,
   timeUntilNext: 0,
+  bulbMode: false,
+  bulbSec: 30.0,
+  timeUntilRelease: 0,
 });
 export const isLoading = writable(false);
 export const socket = writable();

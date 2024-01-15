@@ -32,7 +32,10 @@
 
 <Section name="connect-esp">
   <h2 slot="heading">Connect to ESP8266</h2>
-  <input bind:value={espIPInput} placeholder="ESP8266 IP address" />
+  <label>
+    <span>IP address:</span>
+    <input bind:value={espIPInput} placeholder="ESP8266 IP address" />
+  </label>
   {#if !$isConnected || espIPInput != $espIP}
     <button on:click={connect}> Connect </button>
   {:else}

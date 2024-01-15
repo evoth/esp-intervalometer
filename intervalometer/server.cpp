@@ -55,6 +55,9 @@ void sendStatus() {
   status["isRunning"] = isRunning;
   status["numShots"] = numShots;
   status["timeUntilNext"] = timeUntilNext();
+  status["bulbMode"] = bulbMode;
+  status["bulbSec"] = bulbSec;
+  status["timeUntilRelease"] = timeUntilRelease();
   String statusText;
   serializeJson(status, statusText);
   webSocket.broadcastTXT(statusText);
@@ -100,10 +103,15 @@ void loopProcessRequest() {
     setEspTime(msg);
   } else if (command == "connect") {
     cameraConnect(msg);
+    getBulb();
   } else if (command == "start") {
     startIntervalometer(msg);
   } else if (command == "stop") {
     stopIntervalometer();
+  } else if (command == "enableBulb") {
+    enableBulb();
+  } else if (command == "disableBulb") {
+    disableBulb();
   } else {
     statusCode = 0;
     snprintf(statusMsg, sizeof(statusMsg), "Unknown command.");

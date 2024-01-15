@@ -14,7 +14,10 @@
 
 <Section name="connect-camera">
   <h2 slot="heading">Connect camera</h2>
-  <input bind:value={cameraIP} placeholder="Camera IP address" />
+  <label>
+    <span>IP address:</span>
+    <input bind:value={cameraIP} placeholder="Camera IP address" />
+  </label>
   <button on:click={connect}> Connect </button>
   {#if isConnecting}
     <p>Connecting...</p>
