@@ -7,9 +7,7 @@
   isLoading.subscribe((value) => (isConnecting = value && isConnecting));
 
   const connect = () => {
-    $socket.send(
-      JSON.stringify({ command: "connect", body: { cameraIP: cameraIP } })
-    );
+    $socket.send(JSON.stringify({ command: "connect", cameraIP }));
     isConnecting = $isLoading = true;
   };
 </script>

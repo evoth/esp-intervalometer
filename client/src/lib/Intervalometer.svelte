@@ -7,14 +7,12 @@
   isLoading.subscribe((value) => (isUpdating = value && isUpdating));
 
   const start = () => {
-    $socket.send(
-      JSON.stringify({ command: "start", body: { intervalSec: intervalSec } })
-    );
+    $socket.send(JSON.stringify({ command: "start", intervalSec }));
     isUpdating = $isLoading = true;
   };
 
   const stop = () => {
-    $socket.send(JSON.stringify({ command: "stop", body: {} }));
+    $socket.send(JSON.stringify({ command: "stop" }));
     isUpdating = $isLoading = true;
   };
 </script>

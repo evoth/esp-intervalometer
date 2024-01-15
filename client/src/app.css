@@ -80,7 +80,7 @@ input {
     border-radius: 8px;
     padding: 0.6em;
     outline: none;
-    font-size: 1em;
+    font-size: inherit;
     font-family: inherit;
     color: var(--gray-5);
     background-color: var(--gray-85);

@@ -18,22 +18,23 @@ void initAP()
 void initWebServer()
 {
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *req){
-    req->send_P(200, "text/html", index_html);
+    req->send_P(200, "text/html", indexHtml);
   });
 
   server.on("/icon.svg", HTTP_GET, [](AsyncWebServerRequest *req){
-    req->send_P(200, "image/svg+xml", icon_svg);
+    req->send_P(200, "image/svg+xml", iconSvg);
   });
 
   server.onNotFound([](AsyncWebServerRequest *req){
     if (req->method() == HTTP_OPTIONS) {
+      // CORS OPTIONS request
       req->send(200);
     } else {
       req->send(404, "text/plain", "Not found");
     }
   });
 
-  // CORS
+  // CORS OPTIONS request
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
@@ -56,9 +57,7 @@ void sendStatus() {
   status["timeUntilNext"] = timeUntilNext();
   String statusText;
   serializeJson(status, statusText);
-  Serial.print("Sending status... ");
   webSocket.broadcastTXT(statusText);
-  Serial.println("Sent.");
 }
 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
@@ -74,7 +73,6 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length)
       }
       break;
     case WStype_TEXT:
-      Serial.printf("[%u] get Text: %s\n", num, payload);
       newMsg = true;
       deserializeJson(msg, (const char*) payload);
       break;
@@ -92,22 +90,18 @@ void initServer() {
   initWebSockerServer();
 }
 
+// Execute command based on most recent WebSocket message
 void loopProcessRequest() {
   if (!newMsg) return;
 
   String command = msg["command"];
 
-  char bodyText[1024];
-  serializeJson(msg["body"], bodyText);
-  DynamicJsonDocument body(1024);
-  deserializeJson(body, bodyText);
-
   if (command == "setTime") {
-    setEspTime(body);
+    setEspTime(msg);
   } else if (command == "connect") {
-    cameraConnect(body);
+    cameraConnect(msg);
   } else if (command == "start") {
-    startIntervalometer(body);
+    startIntervalometer(msg);
   } else if (command == "stop") {
     stopIntervalometer();
   } else {

@@ -11,7 +11,6 @@ extern bool isRunning;
 extern unsigned long timeUntilNext();
 extern void startIntervalometer(DynamicJsonDocument doc);
 extern void stopIntervalometer();
-extern void getIntervalometerStatus(AsyncWebServerRequest *request);
 extern void loopIntervalometer();
 
 #endif

@@ -5,6 +5,7 @@ int numShots;
 bool isRunning = false;
 unsigned long lastTime;
 
+// Time until next shot in milliseconds (clamped at 0)
 unsigned long timeUntilNext() {
   unsigned long timeSinceLast = millis() - lastTime;
   if (timeSinceLast >= intervalSec * 1000) return 0;
@@ -36,6 +37,7 @@ void stopIntervalometer() {
   snprintf(statusMsg, sizeof(statusMsg), "Intervalometer stopped successfully.");
 }
 
+// Run in main loop
 void loopIntervalometer() {
   if (!isRunning) return;
   if (timeUntilNext() > 0) return;

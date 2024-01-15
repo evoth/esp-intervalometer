@@ -29,12 +29,12 @@ for match in matches:
 with open(resources_cpp_path, "r") as f:
     cpp = f.read()
 
-# Replaces the index_html literal contents in resources.cpp with updated HTML
-regex = r'const char index_html\[\] PROGMEM = R"rawliteral\(.*?\)rawliteral";'
+# Replaces the indexHtml literal contents in resources.cpp with updated HTML
+regex = r'const char indexHtml\[\] PROGMEM = R"rawliteral\(.*?\)rawliteral";'
 match = re.search(regex, cpp, re.DOTALL)
 cpp = cpp.replace(
     match.group(0),
-    f'const char index_html[] PROGMEM = R"rawliteral(\n{html.strip()}\n)rawliteral";',
+    f'const char indexHtml[] PROGMEM = R"rawliteral(\n{html.strip()}\n)rawliteral";',
     1,
 )
 

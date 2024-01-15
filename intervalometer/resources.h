@@ -3,7 +3,7 @@
 
 #include <avr/pgmspace.h>
 
-extern const char index_html[] PROGMEM;
-extern const char icon_svg[] PROGMEM;
+extern const char indexHtml[] PROGMEM;
+extern const char iconSvg[] PROGMEM;
 
 #endif

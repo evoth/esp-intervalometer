@@ -4,9 +4,12 @@ char cameraIP[32];
 char apiUrl[64];
 bool cameraConnected = false;
 const char *apiUrlTemplate = "http://%s:8080/ccapi";
-const char *apiVersion = "ver100";
 
+// Helper function that sets up HTTP connection before running the "action" function
+// (e.g. http.GET(), http.POST(), etc.), then runs either the success or failure
+// functions depending on the returned status code.
 void request(const char *url, std::function<int()> action, std::function<void()> success, std::function<void()> failure) {
+  // Indicates semantic error like malformed URL
   if (!http.begin(client, url)) {
     snprintf(statusMsg, sizeof(statusMsg), "Could not connect to %s", url);
     statusCode = HTTPC_ERROR_CONNECTION_FAILED;
@@ -63,7 +66,7 @@ void cameraConnect(DynamicJsonDocument doc) {
   );
 }
 
-// Sends a GET request to base CCAPI URL to establish connection
+// Sends a POST request to trigger the shutter
 void triggerShutter() {
   char endpointUrl[128];
   snprintf(endpointUrl, sizeof(endpointUrl), "%s/ver100/shooting/control/shutterbutton", apiUrl);
