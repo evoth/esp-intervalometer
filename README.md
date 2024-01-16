@@ -50,7 +50,7 @@ _(Based on [this article](https://developercommunity.usa.canon.com/s/article/How
 3. Click `EOS & POWERSHOT CAMERAS`.
 4. Navigate to the `CCAPI ACTIVATION TOOL` tab. It may be hidden beneath the `MORE` tab on the right.
 5. Fill out the access request form. Below you can see my answers for the form, but I don't think the accuracy of the information matters too much.
-   > <details><summary>My answers for the CCAPI access request form</summary><img src="screenshots/ccapi_form.png" alt="My answers for CCAPI access request form" width="360"></details>
+   > <details><summary>My answers for the CCAPI access request form</summary><img src="screenshots/ccapi_form.png" alt="My answers for CCAPI access request form" width="500"></details>
 6. You may need to wait for the form to process and refresh the page.
 7. Navigate back to the `CCAPI ACTIVATION TOOL` tab.
 8. Download the right version for your operating system (unfortunately there doesn't seem to be a Linux version).
@@ -77,13 +77,13 @@ By default, the ESP will create a Wi-Fi network with the SSID `ESP8266_AP` and t
 _Note: These instructions are written for the Canon EOS M200, but other camera models may be different._
 
 1. Navigate to the Wi-Fi settings screen. You should see an option called `Canon Control API` (click below to see what it looks like on my camera).
-   > <details><summary>Pictures showing navigation to Wi-Fi settings menu on Canon M200</summary><img src="screenshots/m200_menu.png" alt="Wireless tab in menu" width="180"> <img src="screenshots/m200_wifi.png" alt="Wi-Fi settings" width="180"></details>
+   > <details><summary>Pictures showing navigation to Wi-Fi settings menu on Canon M200</summary><img src="screenshots/m200_menu.png" alt="Wireless tab in menu" width="348"> <img src="screenshots/m200_wifi.png" alt="Wi-Fi settings" width="348"></details>
    - If you don't see the `Canon Control API` option, make sure your camera is [compatible](https://developers.canon-europe.com/s/article/Latest-CCAPI) and you have followed the [CCAPI activation](#ccapi-activation) instructions above.
 2. Select `Camera Control API`, select `Add connection`, then select `Add with wizard`.
 3. If the ESP is powered, its network SSID (`ESP8266_AP` by default) should show up on the list. Select it, and then enter and confirm the password (`defgecd7` by default).
-   > <details><summary>Pictures showing network selection and password screens</summary><img src="screenshots/m200_network.png" alt="ESP8266_AP network in wizard" width="180"> <img src="screenshots/m200_password.png" alt="Password screen" width="180"></details>
+   > <details><summary>Pictures showing network selection and password screens</summary><img src="screenshots/m200_network.png" alt="ESP8266_AP network in wizard" width="348"> <img src="screenshots/m200_password.png" alt="Password screen" width="348"></details>
 4. On the next screen, choose either automatic or manual IP. Setting a manual IP address is recommended so that it always stays the same. Specifically, `192.168.4.7` is the most convenient, since that value is the default value that is pre-populated on the website.
-   > <details><summary>Pictures showing manual IP address setting</summary><img src="screenshots/m200_ip.png" alt="Setting 192.168.4.7 IP address" width="180"> <img src="screenshots/m200_ip2.png" alt="Setting 192.168.4.7 IP address" width="180"></details>
+   > <details><summary>Pictures showing manual IP address setting</summary><img src="screenshots/m200_ip.png" alt="Setting 192.168.4.7 IP address" width="348"> <img src="screenshots/m200_ip2.png" alt="Setting 192.168.4.7 IP address" width="348"></details>
 5. If all goes well, you should see a screen that says `Waiting to connect`, with the URL of the CCAPI endpoint.
 6. Locate the `Connect camera` section of the ESP8266 Intervalometer interface on your other connected device (see [above](#connect-phone-or-computer)). Enter the IP address shown on the camera. For example, if the camera shows `http://192.168.4.7:8080/ccapi`, only enter `192.168.4.7`. Then, press the `Connect` button.
 7. The camera should briefly show a screen that says `Settings complete`, then give the option to disconnect, which means the connection has been saved.
@@ -96,7 +96,7 @@ Once the camera has been connected for the first time, the intervalometer setup 
 1. Make sure the ESP is powered. Then, connect your phone/computer and camera to the network.
 2. Connect the ESP to the camera using the `Connect camera` section of the interface. If successful, the `Intervalometer` section should appear.
 3. Use the intervalometer section to start and stop sequences. You can check on the status of the current sequence using the `Status` section at the top.
-   > The interval must be long enough so that the camera has time to save each image before taking the next. If using the bulb exposure mode (which allows for custom long exposures of over 30 seconds), the interval should be around 10 seconds longer than the bulb time, although this may vary from camera to camera.
+   - The interval must be long enough so that the camera has time to save each image before taking the next. If using the bulb exposure mode (which allows for custom long exposures of over 30 seconds), the interval should be around 10 seconds longer than the bulb time, although this may vary from camera to camera.
 
 ## To-do
 
