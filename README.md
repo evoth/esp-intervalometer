@@ -1,6 +1,6 @@
 # ESP8266 Intervalometer
 
-A ESP8266-based web app and server running that uses the Canon CCAPI to trigger a series of exposures over Wi-Fi.
+A ESP8266-based web app and server that uses the Canon CCAPI to trigger a series of exposures over Wi-Fi.
 
 ## Index
 
