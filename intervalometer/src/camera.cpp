@@ -1,5 +1,11 @@
 #include "camera.h"
+#include "status.h"
 #include <cstring>
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+
+WiFiClient client;
+HTTPClient http;
 
 char cameraIP[32];
 char apiUrl[64];
@@ -50,7 +56,7 @@ void request(const char *url, std::function<int()> action, std::function<void()>
 }
 
 // Sends a GET request to base CCAPI URL to establish connection
-void cameraConnect(DynamicJsonDocument doc) {
+void cameraConnect(JsonDocument doc) {
   String cameraIPTemp = doc["cameraIP"];
   snprintf(cameraIP, sizeof(cameraIP), cameraIPTemp.c_str());
   snprintf(apiUrl, sizeof(apiUrl), apiUrlTemplate, cameraIP);
@@ -142,7 +148,7 @@ void getBulb() {
       return http.GET();
     },
     []() {
-      DynamicJsonDocument response(1024);
+      JsonDocument response;
       deserializeJson(response, http.getString().c_str());
       if (response["value"] == String("bulb")) {
         bulbMode = true;
@@ -190,7 +196,7 @@ void disableBulb() {
 
   request(endpointUrl,
     []() {
-      DynamicJsonDocument body(32);
+      JsonDocument body;
       body["value"] = expSetting;
       String bodyText;
       serializeJson(body, bodyText);

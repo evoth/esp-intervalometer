@@ -1,8 +1,7 @@
-#ifndef INTERVALOMETER_H
-#define INTERVALOMETER_H
+#ifndef ESP_INT_INTERVALOMETER_H
+#define ESP_INT_INTERVALOMETER_H
 
-#include "camera.h"
-#include "server.h"
+#include <ArduinoJson.h>
 
 extern float intervalSec;
 extern float bulbSec;
@@ -11,7 +10,7 @@ extern bool isRunning;
 
 extern unsigned long timeUntilNext();
 extern unsigned long timeUntilRelease();
-extern void startIntervalometer(DynamicJsonDocument doc);
+extern void startIntervalometer(JsonDocument doc);
 extern void stopIntervalometer();
 extern void loopIntervalometer();
 

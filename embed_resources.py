@@ -2,7 +2,7 @@ import re
 from os.path import join
 
 dist_path = "client/dist"
-resources_cpp_path = "intervalometer/resources.cpp"
+resources_cpp_path = "intervalometer/src/resources.cpp"
 
 # Reads contents of index.html
 with open(join(dist_path, "index.html"), "r") as f:

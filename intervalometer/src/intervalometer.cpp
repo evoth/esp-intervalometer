@@ -1,10 +1,14 @@
 #include "intervalometer.h"
+#include "camera.h"
+#include "server.h"
+#include "status.h"
+#include <Arduino.h>
 
 float intervalSec;
 float bulbSec;
 int numShots;
 bool isRunning = false;
-unsigned long lastTime;
+unsigned long lastTime = 0;
 // TODO: move this to camera.cpp?
 bool isPressed = false;
 
@@ -23,14 +27,22 @@ unsigned long timeUntilRelease() {
 }
 
 void capture() {
-  // TODO: quantize timing
-  lastTime = millis();
+  // If we're within 2 intervals of lastTime, quantize the time
+  unsigned long elapsed = millis() - lastTime;
+  unsigned long interval = intervalSec * 1000;
+  if (elapsed < 2 * interval) {
+    lastTime += elapsed - elapsed % interval;
+  } else {
+    lastTime += elapsed;
+  }
+
   if (bulbMode) {
     pressShutter();
     isPressed = true;
   } else {
     triggerShutter();
   }
+
   if (statusCode == 200) {
     numShots++;
   }
@@ -43,7 +55,7 @@ void release() {
   sendStatus();
 }
 
-void startIntervalometer(DynamicJsonDocument doc) {
+void startIntervalometer(JsonDocument doc) {
   getBulb();
   if (bulbMode) {
     bulbSec = doc["bulbSec"];
@@ -51,6 +63,7 @@ void startIntervalometer(DynamicJsonDocument doc) {
     bulbSec = parseExpSetting();
   }
 
+  lastTime = millis();
   intervalSec = doc["intervalSec"];
   numShots = 0;
   isRunning = true;

@@ -1,4 +1,5 @@
-#include "global.h"
+#include <Arduino.h>
+#include "status.h"
 #include "server.h"
 #include "intervalometer.h"
 
@@ -13,5 +14,4 @@ void loop()
 {
   loopProcessRequest();
   loopIntervalometer();
-  webSocket.loop();
 }

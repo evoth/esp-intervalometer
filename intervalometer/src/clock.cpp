@@ -1,4 +1,7 @@
-#include "time.h"
+#include "clock.h"
+#include "status.h"
+#include <Arduino.h>
+#include <TimeLib.h>
 
 unsigned long msOffset = 0;
 
@@ -7,7 +10,7 @@ unsigned long millisecond() {
 }
 
 // Sets internal clock from "sec" since epoch and "ms" milliseconds
-void setEspTime(DynamicJsonDocument doc) {
+void setEspTime(JsonDocument doc) {
   time_t t = doc["sec"];
   setTime(t);
   unsigned long ms = doc["ms"];

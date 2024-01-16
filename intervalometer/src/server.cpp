@@ -1,6 +1,17 @@
 #include "server.h"
+#include "status.h"
+#include "resources.h"
+#include "clock.h"
+#include "camera.h"
+#include "intervalometer.h"
+#include <TimeLib.h>
+#include <ESPAsyncWebServer.h>
+// ENABLE ASYNC MODE IN WebSockets.h TO AVOID BLOCKING
+#include <WebSocketsServer.h>
 
-DynamicJsonDocument msg(1024);
+AsyncWebServer server(80);
+WebSocketsServer webSocket = WebSocketsServer(81);
+JsonDocument msg;
 bool newMsg = false;
 
 void initAP()
@@ -44,7 +55,7 @@ void initWebServer()
 }
 
 void sendStatus() {
-  DynamicJsonDocument status(1024);
+  JsonDocument status;
   status["statusCode"] = statusCode;
   status["statusMsg"] = statusMsg;
   status["sec"] = now();
@@ -78,6 +89,8 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length)
     case WStype_TEXT:
       newMsg = true;
       deserializeJson(msg, (const char*) payload);
+      break;
+    default:
       break;
   }
 }

@@ -177,4 +177,5 @@ input:disabled {
 
 p {
     white-space: pre-line;
+    overflow-wrap: break-word;
 }
