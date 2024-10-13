@@ -69,6 +69,8 @@ void sendStatus() {
   status["bulbMode"] = bulbMode;
   status["bulbSec"] = bulbSec;
   status["timeUntilRelease"] = timeUntilRelease();
+  status["timeUntilCompletion"] = timeUntilCompletion();
+  status["shutterIsPressed"] = shutterIsPressed;
   String statusText;
   serializeJson(status, statusText);
   webSocket.broadcastTXT(statusText);
@@ -95,7 +97,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t* payload, size_t length)
   }
 }
 
-void initWebSockerServer() {
+void initWebSocketServer() {
   webSocket.begin();
   webSocket.onEvent(webSocketEvent);
 }
@@ -103,7 +105,7 @@ void initWebSockerServer() {
 void initServer() {
   initAP();
   initWebServer();
-  initWebSockerServer();
+  initWebSocketServer();
 }
 
 // Execute command based on most recent WebSocket message
@@ -125,6 +127,12 @@ void loopProcessRequest() {
     enableBulb();
   } else if (command == "disableBulb") {
     disableBulb();
+  } else if (command == "triggerShutter") {
+    triggerShutter();
+  } else if (command == "pressShutter") {
+    pressShutter();
+  } else if (command == "releaseShutter") {
+    releaseShutter();
   } else {
     statusCode = 0;
     snprintf(statusMsg, sizeof(statusMsg), "Unknown command.");

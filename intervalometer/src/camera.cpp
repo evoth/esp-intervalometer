@@ -13,6 +13,7 @@ bool cameraConnected = false;
 bool bulbMode = false;
 char expSetting[16];
 const char *apiUrlTemplate = "http://%s:8080/ccapi";
+bool shutterIsPressed = false;
 
 // Helper function that sets up HTTP connection before running the "action" function
 // (e.g. http.GET(), http.POST(), etc.), then runs either the success or failure
@@ -108,6 +109,7 @@ void pressShutter() {
     },
     []() {
       snprintf(statusMsg, sizeof(statusMsg), "Successfully pressed shutter.");
+      shutterIsPressed = true;
     },
     []() {
       if (statusCode < 0) {
@@ -129,6 +131,7 @@ void releaseShutter() {
     },
     []() {
       snprintf(statusMsg, sizeof(statusMsg), "Successfully released shutter.");
+      shutterIsPressed = false;
     },
     []() {
       if (statusCode < 0) {
@@ -138,7 +141,7 @@ void releaseShutter() {
   );
 }
 
-// Retreives shutter speed setting and sets variables appropriately
+// Retrieves shutter speed setting and sets variables appropriately
 void getBulb() {
   char endpointUrl[128];
   snprintf(endpointUrl, sizeof(endpointUrl), "%s/ver100/shooting/settings/tv", apiUrl);

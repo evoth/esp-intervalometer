@@ -10,6 +10,7 @@ extern bool isRunning;
 
 extern unsigned long timeUntilNext();
 extern unsigned long timeUntilRelease();
+extern unsigned long timeUntilCompletion();
 extern void startIntervalometer(JsonDocument doc);
 extern void stopIntervalometer();
 extern void loopIntervalometer();

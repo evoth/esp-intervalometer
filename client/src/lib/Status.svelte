@@ -1,28 +1,28 @@
 <script>
-  import { state, isLoading, isConnected } from "../stores.js";
+  import { state } from "../stores.js";
   import Section from "./Section.svelte";
 
   let timeReceived;
-  let timeUntilNext = "0";
-  let timeUntilRelease = "0";
+  let timeUntilNext = 0;
+  let timeUntilRelease = 0;
+  let timeUntilCompletion = 0;
   let interval;
   state.subscribe((value) => {
     timeReceived = Date.now();
     clearInterval(interval);
     if (value.isRunning) {
       interval = setInterval(() => {
-        timeUntilNext = (
-          ($state.timeUntilNext - (Date.now() - timeReceived)) /
-          1000
-        ).toFixed(1);
-        timeUntilRelease = (
-          ($state.timeUntilRelease - (Date.now() - timeReceived)) /
-          1000
-        ).toFixed(1);
+        timeUntilNext =
+          ($state.timeUntilNext - (Date.now() - timeReceived)) / 1000;
+        timeUntilRelease =
+          ($state.timeUntilRelease - (Date.now() - timeReceived)) / 1000;
+        timeUntilCompletion =
+          ($state.timeUntilCompletion - (Date.now() - timeReceived)) / 1000;
       }, 100);
     } else {
-      timeUntilNext = "0";
-      timeUntilRelease = "0";
+      timeUntilNext = 0;
+      timeUntilRelease = 0;
+      timeUntilCompletion = 0;
     }
   });
 </script>
@@ -40,8 +40,11 @@
   {#if $state.cameraConnected}
     <p>
       Number of shots: {$state.numShots}
-      Time until next shot: {timeUntilNext}
-      Time until shutter release: {timeUntilRelease}
+      Time until next shot: {timeUntilNext.toFixed(1)}
+      Time until shutter release: {timeUntilRelease.toFixed(1)}
+      {#if timeUntilCompletion > 0}
+        Time until completion: {timeUntilCompletion.toFixed(1)}
+      {/if}
     </p>
   {/if}
 </Section>

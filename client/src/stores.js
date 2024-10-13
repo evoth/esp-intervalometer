@@ -16,6 +16,9 @@ export const state = writable({
   bulbMode: false,
   bulbSec: 30.0,
   timeUntilRelease: 0,
+  duration: 0,
+  timeUntilCompletion: 0,
+  shutterIsPressed: false,
 });
 export const isLoading = writable(false);
 export const socket = writable();

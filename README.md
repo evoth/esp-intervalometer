@@ -107,3 +107,9 @@ Once the camera has been connected for the first time, the intervalometer setup 
 - Fix bug where intervalSec is overridden when disabling/enabling bulb mode
 - Other features like LCD off, more status info, etc.
 - Figure out how to enable async mode in the WebSockets library without having to fork a separate version just to move 3 characters
+  - Apparently the web server library includes websocket support so we should just use that
+- More descriptive server error codes
+- Use elapsedMillis
+- Move isPressed from intervalometer.cpp into camera.cpp
+- Consider using classes to isolate logic
+- Rename shutterIsPressed to isShutterPressed (made this feature in a hurry)

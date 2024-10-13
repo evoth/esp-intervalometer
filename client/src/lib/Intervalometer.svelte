@@ -1,16 +1,17 @@
 <script>
   import { state, isLoading, socket } from "../stores.js";
   import Section from "./Section.svelte";
-  let intervalSec, isUpdating, bulbSec;
+  let intervalSec, isUpdating, bulbSec, duration;
 
   state.subscribe((value) => {
     intervalSec = value.intervalSec || intervalSec;
     bulbSec = value.bulbSec || bulbSec;
+    duration = value.duration || duration;
   });
   isLoading.subscribe((value) => (isUpdating = value && isUpdating));
 
   const start = () => {
-    $socket.send(JSON.stringify({ command: "start", intervalSec, bulbSec }));
+    $socket.send(JSON.stringify({ command: "start", intervalSec, bulbSec, duration }));
     isUpdating = $isLoading = true;
   };
 
@@ -59,6 +60,17 @@
       seconds
     </label>
   {/if}
+  <label>
+    Duration:
+    <input
+      type="number"
+      step="any"
+      min="0"
+      bind:value={duration}
+      placeholder="Duration in seconds"
+    />
+    seconds
+  </label>
   {#if $state.isRunning}
     <button on:click={stop}> Stop </button>
   {:else}

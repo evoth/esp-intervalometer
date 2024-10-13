@@ -6,11 +6,12 @@
 
 float intervalSec;
 float bulbSec;
+float duration;
 int numShots;
 bool isRunning = false;
 unsigned long lastTime = 0;
+unsigned long startTime = 0;
 // TODO: move this to camera.cpp?
-bool isPressed = false;
 
 // Time until next shot in milliseconds (clamped at 0)
 unsigned long timeUntilNext() {
@@ -26,6 +27,13 @@ unsigned long timeUntilRelease() {
   return (bulbSec * 1000) - timeSinceLast;
 }
 
+// Time until completion in milliseconds (clamped at 0)
+unsigned long timeUntilCompletion() {
+  unsigned long timeSinceStart = millis() - startTime;
+  if (timeSinceStart >= duration * 1000) return 0;
+  return (duration * 1000) - timeSinceStart;
+}
+
 void capture() {
   // If we're within 2 intervals of lastTime, quantize the time
   unsigned long elapsed = millis() - lastTime;
@@ -38,7 +46,6 @@ void capture() {
 
   if (bulbMode) {
     pressShutter();
-    isPressed = true;
   } else {
     triggerShutter();
   }
@@ -51,7 +58,6 @@ void capture() {
 
 void release() {
   releaseShutter();
-  isPressed = false;
   sendStatus();
 }
 
@@ -64,7 +70,9 @@ void startIntervalometer(JsonDocument doc) {
   }
 
   lastTime = millis();
+  startTime = millis();
   intervalSec = doc["intervalSec"];
+  duration = doc["duration"];
   numShots = 0;
   isRunning = true;
 
@@ -73,6 +81,7 @@ void startIntervalometer(JsonDocument doc) {
 
 void stopIntervalometer() {
   isRunning = false;
+  startTime = 0;
   release();
   if (statusCode == 200) {
     snprintf(statusMsg, sizeof(statusMsg), "Intervalometer stopped successfully.");
@@ -82,7 +91,11 @@ void stopIntervalometer() {
 // Run in main loop
 void loopIntervalometer() {
   if (!isRunning) return;
-  if (bulbMode && isPressed) {
+  if (duration > 0 && timeUntilCompletion() <= 0) {
+    stopIntervalometer();
+    return;
+  }
+  if (bulbMode && shutterIsPressed) {
     if (timeUntilRelease() > 0) return;
     release();
   }

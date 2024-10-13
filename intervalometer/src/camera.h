@@ -6,6 +6,7 @@
 extern char cameraIP[32];
 extern bool cameraConnected;
 extern bool bulbMode;
+extern bool shutterIsPressed;
 
 extern void cameraConnect(JsonDocument doc);
 extern void getBulb();
