@@ -11,14 +11,6 @@ unsigned long Intervalometer::timeUntilNext() {
   return (intervalSec * 1000) - timeSinceLast;
 }
 
-// Time until bulb shutter release in milliseconds (clamped at 0)
-unsigned long Intervalometer::timeUntilRelease() {
-  unsigned long timeSinceLast = millis() - lastTime;
-  if (timeSinceLast >= bulbSec * 1000)
-    return 0;
-  return (bulbSec * 1000) - timeSinceLast;
-}
-
 // Time until completion in milliseconds (clamped at 0)
 unsigned long Intervalometer::timeUntilCompletion() {
   unsigned long timeSinceStart = millis() - startTime;
@@ -37,11 +29,7 @@ void Intervalometer::capture() {
     lastTime += elapsed;
   }
 
-  if (camera.bulbMode) {
-    camera.pressShutter();
-  } else {
-    camera.triggerShutter();
-  }
+  camera.triggerShutter();
 
   if (statusCode == 200) {
     numShots++;
@@ -49,19 +37,7 @@ void Intervalometer::capture() {
   sendStatus();
 }
 
-void Intervalometer::release() {
-  camera.releaseShutter();
-  sendStatus();
-}
-
 void Intervalometer::start(JsonDocument doc) {
-  camera.getBulb();
-  if (camera.bulbMode) {
-    bulbSec = doc["bulbSec"];
-  } else {
-    bulbSec = camera.parseExpSetting();
-  }
-
   lastTime = millis();
   startTime = millis();
   intervalSec = doc["intervalSec"];
@@ -75,11 +51,11 @@ void Intervalometer::start(JsonDocument doc) {
 void Intervalometer::stop() {
   isRunning = false;
   startTime = 0;
-  release();
   if (statusCode == 200) {
     snprintf(statusMsg, sizeof(statusMsg),
              "Intervalometer stopped successfully.");
   }
+  sendStatus();
 }
 
 // Run in main loop
@@ -89,11 +65,6 @@ void Intervalometer::loop() {
   if (duration > 0 && timeUntilCompletion() <= 0) {
     stop();
     return;
-  }
-  if (camera.bulbMode && camera.shutterIsPressed) {
-    if (timeUntilRelease() > 0)
-      return;
-    release();
   }
   if (timeUntilNext() > 0)
     return;

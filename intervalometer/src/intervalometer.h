@@ -10,26 +10,23 @@ class Intervalometer {
   Intervalometer(std::function<void()> sendStatus) : sendStatus(sendStatus) {}
 
   Camera camera;
-  float intervalSec;
-  float bulbSec;
-  int numShots;
-  bool isRunning;
+  float intervalSec = 0;
+  int numShots = 0;
+  bool isRunning = false;
 
   unsigned long timeUntilNext();
-  unsigned long timeUntilRelease();
   unsigned long timeUntilCompletion();
   void start(JsonDocument doc);
   void stop();
   void loop();
 
  private:
-  float duration;
+  float duration = 0;
   unsigned long lastTime = 0;
   unsigned long startTime = 0;
   std::function<void()> sendStatus;
 
   void capture();
-  void release();
 };
 
 #endif

@@ -1,6 +1,6 @@
 #include <Arduino.h>
+#include "espServer.h"
 #include "intervalometer.h"
-#include "server.h"
 #include "status.h"
 
 ESPServer server;

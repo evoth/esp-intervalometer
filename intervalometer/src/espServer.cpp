@@ -1,4 +1,4 @@
-#include "server.h"
+#include "espServer.h"
 #include <TimeLib.h>
 #include "camera.h"
 #include "clock.h"
@@ -61,9 +61,6 @@ void ESPServer::sendStatus() {
   status["isRunning"] = intervalometer.isRunning;
   status["numShots"] = intervalometer.numShots;
   status["timeUntilNext"] = intervalometer.timeUntilNext();
-  status["bulbMode"] = intervalometer.camera.bulbMode;
-  status["bulbSec"] = intervalometer.bulbSec;
-  status["timeUntilRelease"] = intervalometer.timeUntilRelease();
   status["timeUntilCompletion"] = intervalometer.timeUntilCompletion();
   status["shutterIsPressed"] = intervalometer.camera.shutterIsPressed;
   String statusText;
@@ -112,15 +109,10 @@ void ESPServer::processRequest() {
     setEspTime(msg);
   } else if (command == "connect") {
     intervalometer.camera.connect(msg);
-    intervalometer.camera.getBulb();
   } else if (command == "start") {
     intervalometer.start(msg);
   } else if (command == "stop") {
     intervalometer.stop();
-  } else if (command == "enableBulb") {
-    intervalometer.camera.enableBulb();
-  } else if (command == "disableBulb") {
-    intervalometer.camera.disableBulb();
   } else if (command == "triggerShutter") {
     intervalometer.camera.triggerShutter();
   } else if (command == "pressShutter") {

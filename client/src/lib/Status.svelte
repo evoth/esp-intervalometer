@@ -4,7 +4,6 @@
 
   let timeReceived;
   let timeUntilNext = 0;
-  let timeUntilRelease = 0;
   let timeUntilCompletion = 0;
   let interval;
   state.subscribe((value) => {
@@ -14,14 +13,11 @@
       interval = setInterval(() => {
         timeUntilNext =
           ($state.timeUntilNext - (Date.now() - timeReceived)) / 1000;
-        timeUntilRelease =
-          ($state.timeUntilRelease - (Date.now() - timeReceived)) / 1000;
         timeUntilCompletion =
           ($state.timeUntilCompletion - (Date.now() - timeReceived)) / 1000;
       }, 100);
     } else {
       timeUntilNext = 0;
-      timeUntilRelease = 0;
       timeUntilCompletion = 0;
     }
   });
@@ -41,9 +37,8 @@
     <p>
       Number of shots: {$state.numShots}
       Time until next shot: {timeUntilNext.toFixed(1)}
-      Time until shutter release: {timeUntilRelease.toFixed(1)}
       {#if timeUntilCompletion > 0}
-        Time until completion: {timeUntilCompletion.toFixed(1)}
+        <br/>Time until completion: {timeUntilCompletion.toFixed(1)}
       {/if}
     </p>
   {/if}

@@ -2,14 +2,14 @@
 #define ESP_INT_SERVER_H
 
 #include <ESPAsyncWebServer.h>
-#include "intervalometer.h"
 // ENABLE ASYNC MODE IN WebSockets.h TO AVOID BLOCKING
 #include <WebSocketsServer.h>
+#include "intervalometer.h"
 
 class ESPServer {
  public:
   ESPServer()
-      : server(80), webSocket(81), intervalometer([this]() { sendStatus(); }) {}
+      : intervalometer([this]() { sendStatus(); }), server(80), webSocket(81) {}
 
   void initServer();
   void loop();
