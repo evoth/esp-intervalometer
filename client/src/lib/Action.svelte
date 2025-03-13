@@ -3,6 +3,7 @@
   import { CCAPI_ACTIONS } from "./actions";
 
   export let action;
+  export let index;
   export let deleteAction;
 
   const actionSpec = CCAPI_ACTIONS[action.action];
@@ -10,7 +11,7 @@
 
 <div class="container">
   <div class="heading">
-    <h3>{action.action}</h3>
+    <h3>{index + 1}. {action.action}</h3>
     <button class="delete-container" on:click={deleteAction}>
       <svg
         xmlns="http://www.w3.org/2000/svg"

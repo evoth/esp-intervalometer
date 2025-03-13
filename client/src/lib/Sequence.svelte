@@ -27,9 +27,10 @@
 
 <Section name="sequence">
   <h2 slot="heading">Sequence</h2>
-  {#each $actions as action (action)}
+  {#each $actions as action, index (action)}
     <Action
       {action}
+      {index}
       deleteAction={() => {
         $actions = $actions.filter((x) => x !== action);
       }}
