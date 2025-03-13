@@ -1,5 +1,5 @@
 <script>
-  import { state, isLoading, socket } from "../stores.js";
+  import { isLoading, socket, state } from "../stores.js";
   import Section from "./Section.svelte";
   let intervalSec, isUpdating, duration;
 
