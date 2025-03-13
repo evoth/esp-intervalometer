@@ -19,8 +19,8 @@
   {#if $isConnected}
     <ConnectCamera />
     {#if $state.cameraConnected}
-      <Sequence />
       <Intervalometer />
+      <Sequence />
       <Shutter />
     {/if}
   {/if}
