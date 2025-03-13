@@ -1,40 +1,33 @@
 #include "intervalometer.h"
-#include "camera.h"
-#include "server.h"
-#include "status.h"
 #include <Arduino.h>
-
-float intervalSec;
-float bulbSec;
-float duration;
-int numShots;
-bool isRunning = false;
-unsigned long lastTime = 0;
-unsigned long startTime = 0;
-// TODO: move this to camera.cpp?
+#include "camera.h"
+#include "status.h"
 
 // Time until next shot in milliseconds (clamped at 0)
-unsigned long timeUntilNext() {
+unsigned long Intervalometer::timeUntilNext() {
   unsigned long timeSinceLast = millis() - lastTime;
-  if (timeSinceLast >= intervalSec * 1000) return 0;
+  if (timeSinceLast >= intervalSec * 1000)
+    return 0;
   return (intervalSec * 1000) - timeSinceLast;
 }
 
 // Time until bulb shutter release in milliseconds (clamped at 0)
-unsigned long timeUntilRelease() {
+unsigned long Intervalometer::timeUntilRelease() {
   unsigned long timeSinceLast = millis() - lastTime;
-  if (timeSinceLast >= bulbSec * 1000) return 0;
+  if (timeSinceLast >= bulbSec * 1000)
+    return 0;
   return (bulbSec * 1000) - timeSinceLast;
 }
 
 // Time until completion in milliseconds (clamped at 0)
-unsigned long timeUntilCompletion() {
+unsigned long Intervalometer::timeUntilCompletion() {
   unsigned long timeSinceStart = millis() - startTime;
-  if (timeSinceStart >= duration * 1000) return 0;
+  if (timeSinceStart >= duration * 1000)
+    return 0;
   return (duration * 1000) - timeSinceStart;
 }
 
-void capture() {
+void Intervalometer::capture() {
   // If we're within 2 intervals of lastTime, quantize the time
   unsigned long elapsed = millis() - lastTime;
   unsigned long interval = intervalSec * 1000;
@@ -56,12 +49,12 @@ void capture() {
   sendStatus();
 }
 
-void release() {
+void Intervalometer::release() {
   releaseShutter();
   sendStatus();
 }
 
-void startIntervalometer(JsonDocument doc) {
+void Intervalometer::start(JsonDocument doc) {
   getBulb();
   if (bulbMode) {
     bulbSec = doc["bulbSec"];
@@ -79,26 +72,30 @@ void startIntervalometer(JsonDocument doc) {
   capture();
 }
 
-void stopIntervalometer() {
+void Intervalometer::stop() {
   isRunning = false;
   startTime = 0;
   release();
   if (statusCode == 200) {
-    snprintf(statusMsg, sizeof(statusMsg), "Intervalometer stopped successfully.");
+    snprintf(statusMsg, sizeof(statusMsg),
+             "Intervalometer stopped successfully.");
   }
 }
 
 // Run in main loop
-void loopIntervalometer() {
-  if (!isRunning) return;
+void Intervalometer::loop() {
+  if (!isRunning)
+    return;
   if (duration > 0 && timeUntilCompletion() <= 0) {
-    stopIntervalometer();
+    stop();
     return;
   }
   if (bulbMode && shutterIsPressed) {
-    if (timeUntilRelease() > 0) return;
+    if (timeUntilRelease() > 0)
+      return;
     release();
   }
-  if (timeUntilNext() > 0) return;
+  if (timeUntilNext() > 0)
+    return;
   capture();
 }

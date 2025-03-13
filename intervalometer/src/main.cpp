@@ -1,17 +1,16 @@
 #include <Arduino.h>
-#include "status.h"
-#include "server.h"
 #include "intervalometer.h"
+#include "server.h"
+#include "status.h"
 
-void setup()
-{
+ESPServer server;
+
+void setup() {
   Serial.begin(115200);
   Serial.println();
-  initServer();
+  server.initServer();
 }
 
-void loop()
-{
-  loopProcessRequest();
-  loopIntervalometer();
+void loop() {
+  server.loop();
 }

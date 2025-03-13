@@ -2,17 +2,32 @@
 #define ESP_INT_INTERVALOMETER_H
 
 #include <ArduinoJson.h>
+#include <functional>
 
-extern float intervalSec;
-extern float bulbSec;
-extern int numShots;
-extern bool isRunning;
+class Intervalometer {
+ public:
+  Intervalometer(std::function<void()> sendStatus) : sendStatus(sendStatus) {}
 
-extern unsigned long timeUntilNext();
-extern unsigned long timeUntilRelease();
-extern unsigned long timeUntilCompletion();
-extern void startIntervalometer(JsonDocument doc);
-extern void stopIntervalometer();
-extern void loopIntervalometer();
+  float intervalSec;
+  float bulbSec;
+  int numShots;
+  bool isRunning;
+
+  unsigned long timeUntilNext();
+  unsigned long timeUntilRelease();
+  unsigned long timeUntilCompletion();
+  void start(JsonDocument doc);
+  void stop();
+  void loop();
+
+ private:
+  float duration;
+  unsigned long lastTime = 0;
+  unsigned long startTime = 0;
+  std::function<void()> sendStatus;
+
+  void capture();
+  void release();
+};
 
 #endif
