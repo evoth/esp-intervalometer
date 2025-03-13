@@ -22,7 +22,7 @@ class Intervalometer {
 
  private:
   float duration = 0;
-  unsigned long lastTime = 0;
+  unsigned long nextTime = 0;
   unsigned long startTime = 0;
   std::function<void()> sendStatus;
 

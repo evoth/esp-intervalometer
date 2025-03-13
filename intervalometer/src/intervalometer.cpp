@@ -5,10 +5,10 @@
 
 // Time until next shot in milliseconds (clamped at 0)
 unsigned long Intervalometer::timeUntilNext() {
-  unsigned long timeSinceLast = millis() - lastTime;
-  if (timeSinceLast >= intervalSec * 1000)
+  unsigned long current = millis();
+  if (current >= nextTime)
     return 0;
-  return (intervalSec * 1000) - timeSinceLast;
+  return nextTime - current;
 }
 
 // Time until completion in milliseconds (clamped at 0)
@@ -20,13 +20,8 @@ unsigned long Intervalometer::timeUntilCompletion() {
 }
 
 void Intervalometer::capture() {
-  // If we're within 2 intervals of lastTime, quantize the time
-  unsigned long elapsed = millis() - lastTime;
-  unsigned long interval = intervalSec * 1000;
-  if (elapsed < 2 * interval) {
-    lastTime += elapsed - elapsed % interval;
-  } else {
-    lastTime += elapsed;
+  while (nextTime <= millis()) {
+    nextTime += intervalSec * 1000;
   }
 
   camera.triggerShutter();
@@ -38,8 +33,8 @@ void Intervalometer::capture() {
 }
 
 void Intervalometer::start(JsonDocument doc) {
-  lastTime = millis();
   startTime = millis();
+  nextTime = startTime;
   intervalSec = doc["intervalSec"];
   duration = doc["duration"];
   numShots = 0;
