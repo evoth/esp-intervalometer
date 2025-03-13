@@ -3,11 +3,13 @@
 
 #include <ArduinoJson.h>
 #include <functional>
+#include "camera.h"
 
 class Intervalometer {
  public:
   Intervalometer(std::function<void()> sendStatus) : sendStatus(sendStatus) {}
 
+  Camera camera;
   float intervalSec;
   float bulbSec;
   int numShots;

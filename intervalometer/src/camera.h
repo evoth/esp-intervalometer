@@ -3,18 +3,31 @@
 
 #include <ArduinoJson.h>
 
-extern char cameraIP[32];
-extern bool cameraConnected;
-extern bool bulbMode;
-extern bool shutterIsPressed;
+class Camera {
+ public:
+  char cameraIP[32];
+  bool connected = false;
+  bool bulbMode = false;
+  bool shutterIsPressed = false;
 
-extern void cameraConnect(JsonDocument doc);
-extern void getBulb();
-extern void triggerShutter();
-extern void pressShutter();
-extern void releaseShutter();
-extern void enableBulb();
-extern void disableBulb();
-extern float parseExpSetting();
+  void connect(JsonDocument doc);
+  void getBulb();
+  void triggerShutter();
+  void pressShutter();
+  void releaseShutter();
+  void enableBulb();
+  void disableBulb();
+  float parseExpSetting();
+
+ private:
+  char apiUrl[64];
+  char expSetting[16];
+  const char* apiUrlTemplate = "http://%s:8080/ccapi";
+
+  void request(const char* url,
+               std::function<int()> action,
+               std::function<void()> success,
+               std::function<void()> failure);
+};
 
 #endif

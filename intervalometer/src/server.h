@@ -1,7 +1,10 @@
 #ifndef ESP_INT_SERVER_H
 #define ESP_INT_SERVER_H
 
+#include <ESPAsyncWebServer.h>
 #include "intervalometer.h"
+// ENABLE ASYNC MODE IN WebSockets.h TO AVOID BLOCKING
+#include <WebSocketsServer.h>
 
 class ESPServer {
  public:
@@ -13,16 +16,16 @@ class ESPServer {
   void sendStatus();
 
  private:
+  Intervalometer intervalometer;
   AsyncWebServer server;
   WebSocketsServer webSocket;
   JsonDocument msg;
   bool newMsg = false;
-  Intervalometer intervalometer;
 
   void initAP();
   void initWebServer();
   void initWebSocketServer();
-  void loopProcessRequest();
+  void processRequest();
 };
 
 #endif

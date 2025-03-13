@@ -37,10 +37,10 @@ void Intervalometer::capture() {
     lastTime += elapsed;
   }
 
-  if (bulbMode) {
-    pressShutter();
+  if (camera.bulbMode) {
+    camera.pressShutter();
   } else {
-    triggerShutter();
+    camera.triggerShutter();
   }
 
   if (statusCode == 200) {
@@ -50,16 +50,16 @@ void Intervalometer::capture() {
 }
 
 void Intervalometer::release() {
-  releaseShutter();
+  camera.releaseShutter();
   sendStatus();
 }
 
 void Intervalometer::start(JsonDocument doc) {
-  getBulb();
-  if (bulbMode) {
+  camera.getBulb();
+  if (camera.bulbMode) {
     bulbSec = doc["bulbSec"];
   } else {
-    bulbSec = parseExpSetting();
+    bulbSec = camera.parseExpSetting();
   }
 
   lastTime = millis();
@@ -90,7 +90,7 @@ void Intervalometer::loop() {
     stop();
     return;
   }
-  if (bulbMode && shutterIsPressed) {
+  if (camera.bulbMode && camera.shutterIsPressed) {
     if (timeUntilRelease() > 0)
       return;
     release();

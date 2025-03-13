@@ -1,13 +1,9 @@
 #include "server.h"
-#include <ESPAsyncWebServer.h>
 #include <TimeLib.h>
 #include "camera.h"
 #include "clock.h"
-#include "intervalometer.h"
 #include "resources.h"
 #include "status.h"
-// ENABLE ASYNC MODE IN WebSockets.h TO AVOID BLOCKING
-#include <WebSocketsServer.h>
 
 void ESPServer::initAP() {
   const char* ssid = "ESP8266_AP";
@@ -59,17 +55,17 @@ void ESPServer::sendStatus() {
   status["statusMsg"] = statusMsg;
   status["sec"] = now();
   status["ms"] = millisecond();
-  status["cameraConnected"] = cameraConnected;
-  status["cameraIP"] = cameraIP;
+  status["cameraConnected"] = intervalometer.camera.connected;
+  status["cameraIP"] = intervalometer.camera.cameraIP;
   status["intervalSec"] = intervalometer.intervalSec;
   status["isRunning"] = intervalometer.isRunning;
   status["numShots"] = intervalometer.numShots;
   status["timeUntilNext"] = intervalometer.timeUntilNext();
-  status["bulbMode"] = bulbMode;
+  status["bulbMode"] = intervalometer.camera.bulbMode;
   status["bulbSec"] = intervalometer.bulbSec;
   status["timeUntilRelease"] = intervalometer.timeUntilRelease();
   status["timeUntilCompletion"] = intervalometer.timeUntilCompletion();
-  status["shutterIsPressed"] = shutterIsPressed;
+  status["shutterIsPressed"] = intervalometer.camera.shutterIsPressed;
   String statusText;
   serializeJson(status, statusText);
   webSocket.broadcastTXT(statusText);
@@ -106,7 +102,7 @@ void ESPServer::initServer() {
 }
 
 // Execute command based on most recent WebSocket message
-void ESPServer::loopProcessRequest() {
+void ESPServer::processRequest() {
   if (!newMsg)
     return;
 
@@ -115,22 +111,22 @@ void ESPServer::loopProcessRequest() {
   if (command == "setTime") {
     setEspTime(msg);
   } else if (command == "connect") {
-    cameraConnect(msg);
-    getBulb();
+    intervalometer.camera.connect(msg);
+    intervalometer.camera.getBulb();
   } else if (command == "start") {
     intervalometer.start(msg);
   } else if (command == "stop") {
     intervalometer.stop();
   } else if (command == "enableBulb") {
-    enableBulb();
+    intervalometer.camera.enableBulb();
   } else if (command == "disableBulb") {
-    disableBulb();
+    intervalometer.camera.disableBulb();
   } else if (command == "triggerShutter") {
-    triggerShutter();
+    intervalometer.camera.triggerShutter();
   } else if (command == "pressShutter") {
-    pressShutter();
+    intervalometer.camera.pressShutter();
   } else if (command == "releaseShutter") {
-    releaseShutter();
+    intervalometer.camera.releaseShutter();
   } else {
     statusCode = 0;
     snprintf(statusMsg, sizeof(statusMsg), "Unknown command.");
@@ -141,6 +137,6 @@ void ESPServer::loopProcessRequest() {
 }
 
 void ESPServer::loop() {
-  loopProcessRequest();
+  processRequest();
   intervalometer.loop();
 }
