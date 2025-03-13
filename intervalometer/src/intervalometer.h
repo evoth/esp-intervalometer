@@ -7,12 +7,18 @@
 
 class Intervalometer {
  public:
-  Intervalometer(std::function<void()> sendStatus) : sendStatus(sendStatus) {}
+  Intervalometer(std::function<void()> sendStatus) : sendStatus(sendStatus) {
+    deserializeJson(
+        actions,
+        "[{\"action\":\"Trigger "
+        "shutter\",\"fields\":{},\"time\":0,\"timeMode\":\"from start\"}]");
+  }
 
   Camera camera;
   float intervalSec = 0;
   int numShots = 0;
   bool isRunning = false;
+  JsonDocument actions;
 
   unsigned long timeUntilNext();
   unsigned long timeUntilCompletion();

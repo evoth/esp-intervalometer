@@ -1,5 +1,6 @@
 <script>
-  import { isLoading, socket, state } from "../stores.js";
+  import { actions, isLoading, socket, state } from "../stores.js";
+  import { CCAPI_ACTIONS } from "./actions.js";
   import Section from "./Section.svelte";
   let intervalSec, isUpdating, duration;
 
@@ -10,7 +11,31 @@
   isLoading.subscribe((value) => (isUpdating = value && isUpdating));
 
   const start = () => {
-    $socket.send(JSON.stringify({ command: "start", intervalSec, duration }));
+    const sequence = [];
+    for (const action of $actions) {
+      const actionSpec = CCAPI_ACTIONS[action.action];
+      const body = JSON.parse(JSON.stringify(actionSpec.body));
+      for (const fieldName in action.fields) {
+        body[actionSpec.fields[fieldName].key] = action.fields[fieldName];
+      }
+      sequence.push({
+        time: action.time,
+        timeMode: action.timeMode,
+        endpointUrl: actionSpec.endpointUrl,
+        httpMethod: actionSpec.httpMethod,
+        body: JSON.stringify(body),
+      });
+    }
+
+    $socket.send(
+      JSON.stringify({
+        command: "start",
+        intervalSec,
+        duration,
+        sequence,
+        actions: $actions,
+      })
+    );
     isUpdating = $isLoading = true;
   };
 

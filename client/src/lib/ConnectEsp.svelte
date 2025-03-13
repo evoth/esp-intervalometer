@@ -1,15 +1,26 @@
 <script>
-  import { espIP, isConnected, isLoading, socket, state } from "../stores.js";
+  import {
+    actions,
+    espIP,
+    isConnected,
+    isLoading,
+    socket,
+    state,
+  } from "../stores.js";
   import Section from "./Section.svelte";
   let espIPInput = $espIP,
     isConnecting;
+
+  let numUpdates = 0;
 
   const connect = () => {
     $espIP = espIPInput;
     $socket?.close();
     $socket = new WebSocket(`ws://${$espIP}:81`);
     $socket.addEventListener("message", (event) => {
+      numUpdates++;
       $state = JSON.parse(event.data);
+      if (numUpdates == 1) $actions = $state.actions;
       $isLoading = false;
     });
     $socket.addEventListener("open", (event) => {

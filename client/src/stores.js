@@ -1,4 +1,4 @@
-import { readable, writable } from "svelte/store";
+import { writable } from "svelte/store";
 
 export const isConnected = writable(false);
 export const espIP = writable("192.168.4.1");
@@ -16,6 +16,15 @@ export const state = writable({
   duration: 0,
   timeUntilCompletion: 0,
   shutterIsPressed: false,
+  actions: [],
 });
 export const isLoading = writable(false);
 export const socket = writable();
+export const actions = writable([
+  {
+    action: "Trigger shutter",
+    fields: {},
+    time: 0,
+    timeMode: "from start",
+  },
+]);

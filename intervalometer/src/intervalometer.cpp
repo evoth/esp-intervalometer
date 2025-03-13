@@ -33,6 +33,8 @@ void Intervalometer::capture() {
 }
 
 void Intervalometer::start(JsonDocument doc) {
+  actions = doc["actions"];
+
   startTime = millis();
   nextTime = startTime;
   intervalSec = doc["intervalSec"];

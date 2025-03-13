@@ -1,4 +1,5 @@
 <script>
+  import { actions } from "../stores";
   import SelectDropdown from "../util/SelectDropdown.svelte";
   import Action from "./Action.svelte";
   import { CCAPI_ACTIONS } from "./actions";
@@ -6,17 +7,8 @@
 
   let newActionType = "Trigger shutter";
 
-  let actions = [
-    {
-      action: "Trigger shutter",
-      fields: {},
-      time: 0,
-      timeMode: "from start",
-    },
-  ];
-
   const newAction = () => {
-    actions.push({
+    $actions.push({
       action: newActionType,
       // @ts-ignore
       fields: Object.fromEntries(
@@ -29,17 +21,17 @@
       time: 0,
       timeMode: "after previous",
     });
-    actions = actions;
+    $actions = $actions;
   };
 </script>
 
 <Section name="sequence">
   <h2 slot="heading">Sequence</h2>
-  {#each actions as action (action)}
+  {#each $actions as action (action)}
     <Action
       {action}
       deleteAction={() => {
-        actions = actions.filter((x) => x !== action);
+        $actions = $actions.filter((x) => x !== action);
       }}
     />
   {/each}
