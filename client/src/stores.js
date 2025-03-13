@@ -17,6 +17,7 @@ export const state = writable({
   timeUntilCompletion: 0,
   shutterIsPressed: false,
   actions: [],
+  actionIndex: 0,
 });
 export const isLoading = writable(false);
 export const socket = writable();

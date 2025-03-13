@@ -19,6 +19,7 @@
         body[actionSpec.fields[fieldName].key] = action.fields[fieldName];
       }
       sequence.push({
+        name: action.action,
         time: action.time,
         timeMode: action.timeMode,
         endpointUrl: actionSpec.endpointUrl,

@@ -20,23 +20,44 @@ unsigned long Intervalometer::timeUntilCompletion() {
 }
 
 void Intervalometer::capture() {
-  while (nextTime <= millis()) {
-    nextTime += intervalSec * 1000;
+  if (actionIndex >= 0 && actionIndex < sequence.size()) {
+    camera.executeAction(
+        sequence[actionIndex]["name"], sequence[actionIndex]["httpMethod"],
+        sequence[actionIndex]["endpointUrl"], sequence[actionIndex]["body"]);
   }
+  actionIndex++;
 
-  camera.triggerShutter();
-
-  if (statusCode == 200) {
+  if (actionIndex >= sequence.size()) {
     numShots++;
+    actionIndex = -1;
+    cycleTime += intervalSec * 1000;
+    if (millis() > cycleTime)
+      cycleTime = millis();
+    nextTime = cycleTime;
+  } else {
+    String timeMode = sequence[actionIndex]["timeMode"];
+    float timeOffset = sequence[actionIndex]["time"];
+    if (timeMode == "after previous") {
+      nextTime = millis() + timeOffset * 1000;
+    } else {
+      nextTime = cycleTime + timeOffset * 1000;
+    }
   }
+
   sendStatus();
 }
 
 void Intervalometer::start(JsonDocument doc) {
   actions = doc["actions"];
+  sequence = doc["sequence"];
+  if (sequence.size() == 0) {
+    stop();
+    return;
+  }
 
-  startTime = millis();
-  nextTime = startTime;
+  actionIndex = -1;
+
+  nextTime = cycleTime = startTime = millis();
   intervalSec = doc["intervalSec"];
   duration = doc["duration"];
   numShots = 0;

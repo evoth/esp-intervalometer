@@ -12,6 +12,7 @@ class Intervalometer {
         actions,
         "[{\"action\":\"Trigger "
         "shutter\",\"fields\":{},\"time\":0,\"timeMode\":\"from start\"}]");
+    deserializeJson(sequence, "[]");
   }
 
   Camera camera;
@@ -19,6 +20,8 @@ class Intervalometer {
   int numShots = 0;
   bool isRunning = false;
   JsonDocument actions;
+  JsonDocument sequence;
+  int actionIndex = 0;
 
   unsigned long timeUntilNext();
   unsigned long timeUntilCompletion();
@@ -30,6 +33,7 @@ class Intervalometer {
   float duration = 0;
   unsigned long nextTime = 0;
   unsigned long startTime = 0;
+  unsigned long cycleTime = 0;
   std::function<void()> sendStatus;
 
   void capture();

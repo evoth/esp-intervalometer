@@ -64,6 +64,7 @@ void ESPServer::sendStatus() {
   status["timeUntilCompletion"] = intervalometer.timeUntilCompletion();
   status["shutterIsPressed"] = intervalometer.camera.shutterIsPressed;
   status["actions"] = intervalometer.actions;
+  status["actionIndex"] = intervalometer.actionIndex;
   String statusText;
   serializeJson(status, statusText);
   webSocket.broadcastTXT(statusText);

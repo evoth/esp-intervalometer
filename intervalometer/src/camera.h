@@ -16,6 +16,7 @@ class Camera {
   void triggerShutter();
   void pressShutter();
   void releaseShutter();
+  void executeAction(String name, String method, String url, String body);
 
  private:
   char apiUrl[64];
