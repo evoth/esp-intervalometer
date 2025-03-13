@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@svelte-put/clickoutside": "^3.0.1",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "svelte": "^4.2.3",
     "vite": "^5.0.0"

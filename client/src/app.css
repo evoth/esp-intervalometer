@@ -105,23 +105,35 @@ body {
 }
 
 button {
-  border-radius: 8px;
+  border-radius: 0.5rem;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  padding: 0.6em 1.2rem;
+  font-size: 1rem;
   font-weight: 500;
   font-family: inherit;
-  color: var(--gray-95);
-  background-color: var(--gray-5);
+  color: var(--gray-5);
+  background-color: transparent;
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
 }
-button:hover {
-  background-color: var(--gray-35);
+button:hover:not(:disabled) {
+  background-color: var(--gray-65);
 }
 button:disabled {
+  color: var(--gray-50);
+  cursor:not-allowed;
+}
+
+button.inverse {
+  color: var(--gray-95);
+  background-color: var(--gray-5);
+}
+button.inverse:hover:not(:disabled) {
+  background-color: var(--gray-35);
+}
+button.inverse:disabled {
   background-color: var(--gray-50);
-  cursor: not-allowed;
+  cursor:not-allowed;
 }
 
 
@@ -130,7 +142,7 @@ label {
   align-items: center;
   gap: 16px;
   background-color: var(--gray-90);
-  padding: 6px 16px;
+  padding: 10px 16px;
   border-radius: 8px;
   transition: background-color 0.2s;
 }

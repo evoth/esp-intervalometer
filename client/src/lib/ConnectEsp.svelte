@@ -1,5 +1,5 @@
 <script>
-  import { state, socket, isLoading, espIP, isConnected } from "../stores.js";
+  import { espIP, isConnected, isLoading, socket, state } from "../stores.js";
   import Section from "./Section.svelte";
   let espIPInput = $espIP,
     isConnecting;
@@ -37,9 +37,9 @@
     <input bind:value={espIPInput} placeholder="ESP8266 IP address" />
   </label>
   {#if !$isConnected || espIPInput != $espIP}
-    <button on:click={connect}> Connect </button>
+    <button class="inverse" on:click={connect}> Connect </button>
   {:else}
-    <button on:click={disconnect}> Disconnect </button>
+    <button class="inverse" on:click={disconnect}> Disconnect </button>
   {/if}
   {#if isConnecting}
     <p>Connecting...</p>

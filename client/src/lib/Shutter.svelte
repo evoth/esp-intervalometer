@@ -1,8 +1,8 @@
 <script>
-  import { state, isLoading, socket } from "../stores.js";
+  import { isLoading, socket, state } from "../stores.js";
   import Section from "./Section.svelte";
   let isUpdating;
-  
+
   isLoading.subscribe((value) => (isUpdating = value && isUpdating));
 
   const triggerShutter = () => {
@@ -10,27 +10,25 @@
     isUpdating = $isLoading = true;
   };
 
-const pressShutter = () => {
-  $socket.send(JSON.stringify({ command: "pressShutter" }));
-  isUpdating = $isLoading = true;
-};
+  const pressShutter = () => {
+    $socket.send(JSON.stringify({ command: "pressShutter" }));
+    isUpdating = $isLoading = true;
+  };
 
-const releaseShutter = () => {
-  $socket.send(JSON.stringify({ command: "releaseShutter" }));
-  isUpdating = $isLoading = true;
-};
+  const releaseShutter = () => {
+    $socket.send(JSON.stringify({ command: "releaseShutter" }));
+    isUpdating = $isLoading = true;
+  };
 </script>
 
 <Section name="shutter">
   <h2 slot="heading">Shutter</h2>
 
-  <button on:click={triggerShutter}>
-    Trigger shutter
-  </button>
+  <button class="inverse" on:click={triggerShutter}> Trigger shutter </button>
   {#if $state.shutterIsPressed}
-    <button on:click={releaseShutter}> Release shutter </button>
+    <button class="inverse" on:click={releaseShutter}> Release shutter </button>
   {:else}
-    <button on:click={pressShutter}> Press shutter </button>
+    <button class="inverse" on:click={pressShutter}> Press shutter </button>
   {/if}
 
   {#if isUpdating}

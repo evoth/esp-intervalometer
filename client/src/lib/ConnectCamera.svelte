@@ -1,5 +1,5 @@
 <script>
-  import { state, socket, isLoading } from "../stores.js";
+  import { isLoading, socket, state } from "../stores.js";
   import Section from "./Section.svelte";
   let cameraIP, isConnecting;
 
@@ -18,7 +18,7 @@
     <span>IP address:</span>
     <input bind:value={cameraIP} placeholder="Camera IP address" />
   </label>
-  <button on:click={connect}> Connect </button>
+  <button class="inverse" on:click={connect}> Connect </button>
   {#if isConnecting}
     <p>Connecting...</p>
   {:else if $state.cameraConnected}

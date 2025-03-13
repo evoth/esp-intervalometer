@@ -75,6 +75,9 @@
     align-items: center;
     padding-bottom: 16px;
   }
+  .heading:hover {
+    background-color: transparent;
+  }
 
   .arrow-container {
     transition: background-color 0.2s;

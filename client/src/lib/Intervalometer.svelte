@@ -45,10 +45,10 @@
     seconds
   </label>
   {#if $state.isRunning}
-    <button on:click={stop}> Stop </button>
+    <button class="inverse" on:click={stop}> Stop </button>
   {:else}
     <!-- TODO: Add some basic validation -->
-    <button on:click={start}> Start </button>
+    <button class="inverse" on:click={start}> Start </button>
   {/if}
 
   {#if isUpdating}
