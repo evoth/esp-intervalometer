@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import ConnectCamera from "./lib/ConnectCamera.svelte";
   import ConnectEsp from "./lib/ConnectEsp.svelte";
   import Intervalometer from "./lib/Intervalometer.svelte";

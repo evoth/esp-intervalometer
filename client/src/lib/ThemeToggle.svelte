@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   export let theme =
     localStorage.getItem("theme") ||
     (window.matchMedia("(prefers-color-scheme: dark)").matches

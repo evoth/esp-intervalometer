@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
   import { slide } from "svelte/transition";
   export let name;
 
   const storageKey = `${name}-expanded`;
-  let isExpanded;
+  let isExpanded: boolean | undefined;
   if (localStorage.getItem(storageKey)) {
     isExpanded = localStorage.getItem(storageKey) == String(true);
   } else {

@@ -100,6 +100,7 @@ Once the camera has been connected for the first time, the intervalometer setup 
 
 ## To-do
 
+- Clean up code and migrate to Svelte 5
 - Better error handling (count number, notify user, etc.)
 - Ability to set duration (either time or number of shots)
 - Ability to add delay (time or amount of time)
@@ -111,5 +112,4 @@ Once the camera has been connected for the first time, the intervalometer setup 
 - More descriptive server error codes
 - Use elapsedMillis
 - Move isPressed from intervalometer.cpp into camera.cpp
-- Consider using classes to isolate logic
 - Rename shutterIsPressed to isShutterPressed (made this feature in a hurry)

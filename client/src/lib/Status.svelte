@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
   import { state } from "../stores.js";
   import Section from "./Section.svelte";
 
-  let timeReceived;
+  let timeReceived = Date.now();
   let timeUntilNext = 0;
   let timeUntilCompletion = 0;
-  let interval;
+  let interval: number | undefined;
   state.subscribe((value) => {
     timeReceived = Date.now();
     clearInterval(interval);

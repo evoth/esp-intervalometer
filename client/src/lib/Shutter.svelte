@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
   import { isLoading, socket, state } from "../stores.js";
   import Section from "./Section.svelte";
-  let isUpdating;
+  let isUpdating: boolean | undefined;
 
   isLoading.subscribe((value) => (isUpdating = value && isUpdating));
 

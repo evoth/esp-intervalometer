@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
   import { actions } from "../stores";
   import SelectDropdown from "../util/SelectDropdown.svelte";
   import Action from "./Action.svelte";
-  import { CCAPI_ACTIONS } from "./actions";
+  import { ACTIONS_DEF } from "./actions";
   import Section from "./Section.svelte";
 
   let newActionType = "Trigger shutter";
@@ -12,9 +12,9 @@
       action: newActionType,
       // @ts-ignore
       fields: Object.fromEntries(
-        Object.entries(CCAPI_ACTIONS[newActionType].fields).map(
+        Object.entries(ACTIONS_DEF[newActionType].fields).map(
           ([key, field]) => {
-            return [key, CCAPI_ACTIONS[newActionType].body[field.key]];
+            return [key, ACTIONS_DEF[newActionType].body[field.key]];
           }
         )
       ),
@@ -41,7 +41,7 @@
     label="New action"
     buttonTitle={"Choose new action type"}
     bind:value={newActionType}
-    options={Object.keys(CCAPI_ACTIONS)}
+    options={Object.keys(ACTIONS_DEF)}
   />
   <button class="inverse" on:click={newAction}> Add action </button>
 </Section>

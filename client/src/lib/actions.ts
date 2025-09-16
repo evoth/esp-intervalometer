@@ -1,4 +1,31 @@
-export const CCAPI_ACTIONS = {
+type ActionDef = {
+  endpointUrl: string;
+  httpMethod: "POST" | "PUT";
+  body: any;
+  fields: Record<string, { key: string; options: string[] }>;
+};
+
+// export type ActionKey = keyof typeof ACTIONS_DEF;
+
+// export type Action<K extends ActionKey> = {
+//   action: K;
+//   fields: Record<keyof (typeof ACTIONS_DEF)[K]["fields"], string>;
+//   time: number;
+//   timeMode: "from start" | "after previous";
+// };
+
+export type Action = {
+  action: string;
+  fields: Record<string, string>;
+  time: number;
+  timeMode: "from start" | "after previous";
+};
+
+// export type AnyAction = {
+//   [K in ActionKey]: Action<K>;
+// }[ActionKey];
+
+export const ACTIONS_DEF: Record<string, ActionDef> = {
   "Trigger shutter": {
     endpointUrl: "/ver100/shooting/control/shutterbutton",
     httpMethod: "POST",

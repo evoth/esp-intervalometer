@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import {
     actions,
     espIP,
@@ -8,8 +8,8 @@
     state,
   } from "../stores.js";
   import Section from "./Section.svelte";
-  let espIPInput = $espIP,
-    isConnecting;
+  let espIPInput = $espIP;
+  let isConnecting: boolean | undefined;
 
   let numUpdates = 0;
 

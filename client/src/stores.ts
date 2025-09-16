@@ -1,3 +1,5 @@
+import type { Action } from "./lib/actions";
+
 import { writable } from "svelte/store";
 
 export const isConnected = writable(false);
@@ -20,8 +22,8 @@ export const state = writable({
   actionIndex: 0,
 });
 export const isLoading = writable(false);
-export const socket = writable();
-export const actions = writable([
+export const socket = writable<WebSocket>();
+export const actions = writable<Action[]>([
   {
     action: "Trigger shutter",
     fields: {},

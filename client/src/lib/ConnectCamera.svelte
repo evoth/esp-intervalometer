@@ -1,7 +1,8 @@
-<script>
+<script lang="ts">
   import { isLoading, socket, state } from "../stores.js";
   import Section from "./Section.svelte";
-  let cameraIP, isConnecting;
+  let cameraIP: string | undefined;
+  let isConnecting: boolean | undefined;
 
   state.subscribe((value) => (cameraIP = value.cameraIP || cameraIP));
   isLoading.subscribe((value) => (isConnecting = value && isConnecting));

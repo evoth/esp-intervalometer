@@ -1,12 +1,12 @@
-<script>
+<script lang="ts">
   import SelectDropdown from "../util/SelectDropdown.svelte";
-  import { CCAPI_ACTIONS } from "./actions";
+  import { ACTIONS_DEF, type Action } from "./actions";
 
-  export let action;
+  export let action: Action;
   export let index;
   export let deleteAction;
 
-  const actionSpec = CCAPI_ACTIONS[action.action];
+  const actionSpec = ACTIONS_DEF[action.action];
 </script>
 
 <div class="container">

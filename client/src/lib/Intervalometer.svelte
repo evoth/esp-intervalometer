@@ -1,8 +1,10 @@
-<script>
+<script lang="ts">
   import { actions, isLoading, socket, state } from "../stores.js";
-  import { CCAPI_ACTIONS } from "./actions.js";
+  import { ACTIONS_DEF } from "./actions.js";
   import Section from "./Section.svelte";
-  let intervalSec, isUpdating, duration;
+  let intervalSec: number | undefined;
+  let isUpdating: boolean | undefined;
+  let duration: number | undefined;
 
   state.subscribe((value) => {
     intervalSec = value.intervalSec || intervalSec;
@@ -13,7 +15,7 @@
   const start = () => {
     const sequence = [];
     for (const action of $actions) {
-      const actionSpec = CCAPI_ACTIONS[action.action];
+      const actionSpec = ACTIONS_DEF[action.action];
       const body = JSON.parse(JSON.stringify(actionSpec.body));
       for (const fieldName in action.fields) {
         body[actionSpec.fields[fieldName].key] = action.fields[fieldName];
