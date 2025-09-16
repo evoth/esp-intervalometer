@@ -1,9 +1,15 @@
-type ActionDef = {
-  endpointUrl: string;
-  httpMethod: "POST" | "PUT";
-  body: any;
-  fields: Record<string, { key: string; options: string[] }>;
-};
+type ActionDef =
+  | (
+      | {
+          actionType: "CCAPI";
+          endpointUrl: string;
+          httpMethod: "POST" | "PUT";
+        }
+      | { actionType: "IR_TRIGGER" }
+    ) & {
+      body: any;
+      fields: Record<string, { key: string; options: string[] }>;
+    };
 
 // export type ActionKey = keyof typeof ACTIONS_DEF;
 
@@ -27,6 +33,7 @@ export type Action = {
 
 export const ACTIONS_DEF: Record<string, ActionDef> = {
   "Trigger shutter": {
+    actionType: "CCAPI",
     endpointUrl: "/ver100/shooting/control/shutterbutton",
     httpMethod: "POST",
     body: {
@@ -35,6 +42,7 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
     fields: {},
   },
   "Control shutter": {
+    actionType: "CCAPI",
     endpointUrl: "/ver100/shooting/control/shutterbutton/manual",
     httpMethod: "POST",
     body: {
@@ -49,6 +57,7 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
     },
   },
   "Set ISO": {
+    actionType: "CCAPI",
     endpointUrl: "/ver100/shooting/settings/iso",
     httpMethod: "PUT",
     body: {
@@ -89,6 +98,7 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
     },
   },
   "Set aperture": {
+    actionType: "CCAPI",
     endpointUrl: "/ver100/shooting/settings/av",
     httpMethod: "PUT",
     body: {
@@ -120,6 +130,7 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
     },
   },
   "Set shutter speed": {
+    actionType: "CCAPI",
     endpointUrl: "/ver100/shooting/settings/tv",
     httpMethod: "PUT",
     body: {
@@ -187,6 +198,7 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
     },
   },
   "Set exposure compensation": {
+    actionType: "CCAPI",
     endpointUrl: "/ver100/shooting/settings/exposure",
     httpMethod: "PUT",
     body: {
@@ -220,6 +232,7 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
     },
   },
   "Set shooting mode": {
+    actionType: "CCAPI",
     endpointUrl: "/ver100/shooting/settings/shootingmode",
     httpMethod: "PUT",
     body: {
@@ -231,5 +244,10 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
         options: ["m", "av", "tv", "p", "auto"],
       },
     },
+  },
+  "Canon IR Trigger": {
+    actionType: "IR_TRIGGER",
+    body: {},
+    fields: {},
   },
 };

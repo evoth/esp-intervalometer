@@ -6,7 +6,7 @@
   import Shutter from "./lib/Shutter.svelte";
   import Status from "./lib/Status.svelte";
   import ThemeToggle from "./lib/ThemeToggle.svelte";
-  import { isConnected, state } from "./stores.js";
+  import { isConnected } from "./stores.js";
 </script>
 
 <main>
@@ -18,11 +18,9 @@
   <ConnectEsp />
   {#if $isConnected}
     <ConnectCamera />
-    {#if $state.cameraConnected}
-      <Intervalometer />
-      <Sequence />
-      <Shutter />
-    {/if}
+    <Intervalometer />
+    <Sequence />
+    <Shutter />
   {/if}
 </main>
 

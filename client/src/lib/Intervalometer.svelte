@@ -15,19 +15,30 @@
   const start = () => {
     const sequence = [];
     for (const action of $actions) {
-      const actionSpec = ACTIONS_DEF[action.action];
-      const body = JSON.parse(JSON.stringify(actionSpec.body));
+      const actionDef = ACTIONS_DEF[action.action];
+      const body = JSON.parse(JSON.stringify(actionDef.body));
       for (const fieldName in action.fields) {
-        body[actionSpec.fields[fieldName].key] = action.fields[fieldName];
+        body[actionDef.fields[fieldName].key] = action.fields[fieldName];
       }
-      sequence.push({
-        name: action.action,
-        time: action.time,
-        timeMode: action.timeMode,
-        endpointUrl: actionSpec.endpointUrl,
-        httpMethod: actionSpec.httpMethod,
-        body: JSON.stringify(body),
-      });
+      if (actionDef.actionType === "CCAPI") {
+        sequence.push({
+          name: action.action,
+          actionType: actionDef.actionType,
+          time: action.time,
+          timeMode: action.timeMode,
+          endpointUrl: actionDef.endpointUrl,
+          httpMethod: actionDef.httpMethod,
+          body: JSON.stringify(body),
+        });
+      } else {
+        sequence.push({
+          name: action.action,
+          actionType: actionDef.actionType,
+          time: action.time,
+          timeMode: action.timeMode,
+          body: JSON.stringify(body),
+        });
+      }
     }
 
     $socket.send(

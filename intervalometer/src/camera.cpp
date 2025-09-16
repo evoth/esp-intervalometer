@@ -5,7 +5,7 @@
 // Helper function that sets up HTTP connection before running the "action"
 // function (e.g. http.GET(), http.POST(), etc.), then runs either the success
 // or failure functions depending on the returned status code.
-int Camera::request(const char* method, const char* url, const char* body) {
+int CCAPI::request(const char* method, const char* url, const char* body) {
   // Indicates semantic error like malformed URL
   if (!http.begin(client, url)) {
     snprintf(statusMsg, sizeof(statusMsg), "Could not connect to %s", url);
@@ -51,7 +51,7 @@ int Camera::request(const char* method, const char* url, const char* body) {
 }
 
 // Sends a GET request to base CCAPI URL to establish connection
-void Camera::connect(JsonDocument doc) {
+void CCAPI::connect(JsonDocument doc) {
   String cameraIPTemp = doc["cameraIP"];
   snprintf(cameraIP, sizeof(cameraIP), cameraIPTemp.c_str());
   snprintf(apiUrl, sizeof(apiUrl), apiUrlTemplate, cameraIP);
@@ -66,7 +66,7 @@ void Camera::connect(JsonDocument doc) {
 }
 
 // Sends a POST request to trigger the shutter
-void Camera::triggerShutter() {
+void CCAPI::triggerShutter() {
   char endpointUrl[128];
   snprintf(endpointUrl, sizeof(endpointUrl),
            "%s/ver100/shooting/control/shutterbutton", apiUrl);
@@ -78,7 +78,7 @@ void Camera::triggerShutter() {
 }
 
 // Sends a POST request to simulate pressing and holding the shutter
-void Camera::pressShutter() {
+void CCAPI::pressShutter() {
   char endpointUrl[128];
   snprintf(endpointUrl, sizeof(endpointUrl),
            "%s/ver100/shooting/control/shutterbutton/manual", apiUrl);
@@ -92,7 +92,7 @@ void Camera::pressShutter() {
 }
 
 // Sends a POST request to simulate releasing the shutter
-void Camera::releaseShutter() {
+void CCAPI::releaseShutter() {
   char endpointUrl[128];
   snprintf(endpointUrl, sizeof(endpointUrl),
            "%s/ver100/shooting/control/shutterbutton/manual", apiUrl);
@@ -106,10 +106,7 @@ void Camera::releaseShutter() {
 }
 
 // Sends a POST request to simulate releasing the shutter
-void Camera::executeAction(String name,
-                           String method,
-                           String url,
-                           String body) {
+void CCAPI::executeAction(String name, String method, String url, String body) {
   char endpointUrl[128];
   snprintf(endpointUrl, sizeof(endpointUrl), "%s%s", apiUrl, url.c_str());
 

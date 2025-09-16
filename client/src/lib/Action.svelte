@@ -6,7 +6,7 @@
   export let index;
   export let deleteAction;
 
-  const actionSpec = ACTIONS_DEF[action.action];
+  const actionDef = ACTIONS_DEF[action.action];
 </script>
 
 <div class="container">
@@ -57,7 +57,7 @@
         label={fieldKey}
         buttonTitle={"Choose value for" + fieldKey}
         bind:value={action.fields[fieldKey]}
-        options={actionSpec.fields[fieldKey].options}
+        options={actionDef.fields[fieldKey].options}
       />
     </div>
   {/each}

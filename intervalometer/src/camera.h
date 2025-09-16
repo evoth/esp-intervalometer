@@ -5,7 +5,7 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
 
-class Camera {
+class CCAPI {
  public:
   char cameraIP[32];
   bool connected = false;

@@ -121,6 +121,8 @@ void ESPServer::processRequest() {
     intervalometer.camera.pressShutter();
   } else if (command == "releaseShutter") {
     intervalometer.camera.releaseShutter();
+  } else if (command == "triggerIR") {
+    intervalometer.ir.trigger();
   } else {
     statusCode = 0;
     snprintf(statusMsg, sizeof(statusMsg), "Unknown command.");

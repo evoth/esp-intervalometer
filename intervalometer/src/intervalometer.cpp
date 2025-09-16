@@ -19,11 +19,16 @@ unsigned long Intervalometer::timeUntilCompletion() {
   return (duration * 1000) - timeSinceStart;
 }
 
-void Intervalometer::capture() {
+void Intervalometer::action() {
   if (actionIndex >= 0 && actionIndex < sequence.size()) {
-    camera.executeAction(
-        sequence[actionIndex]["name"], sequence[actionIndex]["httpMethod"],
-        sequence[actionIndex]["endpointUrl"], sequence[actionIndex]["body"]);
+    String actionType = sequence[actionIndex]["actionType"];
+    if (actionType == "CCAPI") {
+      camera.executeAction(
+          sequence[actionIndex]["name"], sequence[actionIndex]["httpMethod"],
+          sequence[actionIndex]["endpointUrl"], sequence[actionIndex]["body"]);
+    } else if (actionType == "IR_TRIGGER") {
+      ir.trigger();
+    }
   }
   actionIndex++;
 
@@ -63,7 +68,7 @@ void Intervalometer::start(JsonDocument doc) {
   numShots = 0;
   isRunning = true;
 
-  capture();
+  action();
 }
 
 void Intervalometer::stop() {
@@ -86,5 +91,5 @@ void Intervalometer::loop() {
   }
   if (timeUntilNext() > 0)
     return;
-  capture();
+  action();
 }

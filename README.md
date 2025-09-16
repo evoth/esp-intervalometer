@@ -113,3 +113,7 @@ Once the camera has been connected for the first time, the intervalometer setup 
 - Use elapsedMillis
 - Move isPressed from intervalometer.cpp into camera.cpp
 - Rename shutterIsPressed to isShutterPressed (made this feature in a hurry)
+- Support arbitrary IR sequences like this:
+  https://github.com/Lucaslhm/Flipper-IRDB/blob/main/Cameras/Canon/Canon_Camera_JJC%20RM-E6A.ir
+- Use something like vite-plugin-singlefile instead of manually inlining
+  resources in embed_resources.py

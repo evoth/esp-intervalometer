@@ -8,15 +8,13 @@
   let newActionType = "Trigger shutter";
 
   const newAction = () => {
+    const newActionDef = ACTIONS_DEF[newActionType];
     $actions.push({
       action: newActionType,
-      // @ts-ignore
       fields: Object.fromEntries(
-        Object.entries(ACTIONS_DEF[newActionType].fields).map(
-          ([key, field]) => {
-            return [key, ACTIONS_DEF[newActionType].body[field.key]];
-          }
-        )
+        Object.entries(newActionDef.fields).map(([key, field]) => {
+          return [key, newActionDef.body[field.key]];
+        })
       ),
       time: 0,
       timeMode: "after previous",

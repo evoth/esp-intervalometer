@@ -19,6 +19,11 @@
     $socket.send(JSON.stringify({ command: "releaseShutter" }));
     isUpdating = $isLoading = true;
   };
+
+  const triggerIR = () => {
+    $socket.send(JSON.stringify({ command: "triggerIR" }));
+    isUpdating = $isLoading = true;
+  };
 </script>
 
 <Section name="shutter">
@@ -30,6 +35,7 @@
   {:else}
     <button class="inverse" on:click={pressShutter}> Press shutter </button>
   {/if}
+  <button class="inverse" on:click={triggerIR}> Trigger IR release </button>
 
   {#if isUpdating}
     <p>Loading...</p>

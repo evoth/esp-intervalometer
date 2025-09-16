@@ -33,16 +33,14 @@
     Status code: {$state.statusCode}
     Status message: {$state.statusMsg}
   </p>
-  {#if $state.cameraConnected}
-    <p>
-      Number of cycles: {$state.numShots}
-      Next action index: {$state.actionIndex == -1
-        ? 1
-        : $state.actionIndex + 1}/{$state.actions.length}
-      Time until next action: {timeUntilNext.toFixed(1)}
-      {#if timeUntilCompletion > 0}
-        <br />Time until completion: {timeUntilCompletion.toFixed(1)}
-      {/if}
-    </p>
-  {/if}
+  <p>
+    Number of cycles: {$state.numShots}
+    Next action index: {$state.actionIndex == -1
+      ? 1
+      : $state.actionIndex + 1}/{$state.actions.length}
+    Time until next action: {timeUntilNext.toFixed(1)}
+    {#if timeUntilCompletion > 0}
+      <br />Time until completion: {timeUntilCompletion.toFixed(1)}
+    {/if}
+  </p>
 </Section>

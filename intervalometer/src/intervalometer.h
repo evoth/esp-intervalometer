@@ -4,10 +4,12 @@
 #include <ArduinoJson.h>
 #include <functional>
 #include "camera.h"
+#include "ir.h"
 
 class Intervalometer {
  public:
-  Intervalometer(std::function<void()> sendStatus) : sendStatus(sendStatus) {
+  Intervalometer(std::function<void()> sendStatus)
+      : ir(13), sendStatus(sendStatus) {
     deserializeJson(
         actions,
         "[{\"action\":\"Trigger "
@@ -15,7 +17,8 @@ class Intervalometer {
     deserializeJson(sequence, "[]");
   }
 
-  Camera camera;
+  CCAPI camera;
+  IR ir;
   float intervalSec = 0;
   int numShots = 0;
   bool isRunning = false;
@@ -36,7 +39,7 @@ class Intervalometer {
   unsigned long cycleTime = 0;
   std::function<void()> sendStatus;
 
-  void capture();
+  void action();
 };
 
 #endif
