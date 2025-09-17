@@ -67,6 +67,7 @@ void ESPServer::sendStatus() {
   status["actionIndex"] = intervalometer.actionIndex;
   String statusText;
   serializeJson(status, statusText);
+  Serial.println(statusText);
   webSocket.broadcastTXT(statusText);
 }
 
@@ -85,8 +86,9 @@ void ESPServer::initWebSocketServer() {
             sendStatus();
           } break;
           case WStype_TEXT:
-            newMsg = true;
-            deserializeJson(msg, (const char*)payload);
+            if (!deserializeJson(msg, (const char*)payload)) {
+              newMsg = true;
+            }
             break;
           default:
             break;
@@ -133,6 +135,12 @@ void ESPServer::processRequest() {
 }
 
 void ESPServer::loop() {
+  if (Serial.available()) {
+    String json = Serial.readStringUntil('\n');
+    if (!deserializeJson(msg, json)) {
+      newMsg = true;
+    }
+  }
   processRequest();
   intervalometer.loop();
 }
