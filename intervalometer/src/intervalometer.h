@@ -22,6 +22,7 @@ class Intervalometer {
   float intervalSec = 0;
   int numShots = 0;
   bool isRunning = false;
+  bool isStopping = false;
   JsonDocument actions;
   JsonDocument sequence;
   int actionIndex = 0;
@@ -30,6 +31,7 @@ class Intervalometer {
   unsigned long timeUntilCompletion();
   void start(JsonDocument doc);
   void stop();
+  void stopAfterLast();
   void loop();
 
  private:

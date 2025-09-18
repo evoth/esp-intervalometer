@@ -35,6 +35,10 @@ void Intervalometer::action() {
   if (actionIndex >= sequence.size()) {
     numShots++;
     actionIndex = -1;
+    if (isStopping) {
+      stop();
+      return;
+    }
     cycleTime += intervalSec * 1000;
     if (millis() > cycleTime)
       cycleTime = millis();
@@ -67,17 +71,31 @@ void Intervalometer::start(JsonDocument doc) {
   duration = doc["duration"];
   numShots = 0;
   isRunning = true;
+  isStopping = false;
 
   action();
 }
 
 void Intervalometer::stop() {
   isRunning = false;
+  isStopping = false;
   startTime = 0;
-  if (statusCode == 200) {
-    snprintf(statusMsg, sizeof(statusMsg),
-             "Intervalometer stopped successfully.");
+  statusCode = 200;
+  snprintf(statusMsg, sizeof(statusMsg),
+           "Intervalometer stopped successfully.");
+  sendStatus();
+}
+
+void Intervalometer::stopAfterLast() {
+  if (actionIndex == -1) {
+    // We're after the last action but before the first action
+    stop();
+    return;
   }
+  isStopping = true;
+  statusCode = 0;
+  snprintf(statusMsg, sizeof(statusMsg),
+           "Stopping intervalometer after last action...");
   sendStatus();
 }
 
@@ -86,7 +104,7 @@ void Intervalometer::loop() {
   if (!isRunning)
     return;
   if (duration > 0 && timeUntilCompletion() <= 0) {
-    stop();
+    stopAfterLast();
     return;
   }
   if (timeUntilNext() > 0)

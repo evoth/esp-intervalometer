@@ -59,6 +59,7 @@ void ESPServer::sendStatus() {
   status["cameraIP"] = intervalometer.camera.cameraIP;
   status["intervalSec"] = intervalometer.intervalSec;
   status["isRunning"] = intervalometer.isRunning;
+  status["isStopping"] = intervalometer.isStopping;
   status["numShots"] = intervalometer.numShots;
   status["timeUntilNext"] = intervalometer.timeUntilNext();
   status["timeUntilCompletion"] = intervalometer.timeUntilCompletion();
@@ -116,7 +117,13 @@ void ESPServer::processRequest() {
   } else if (command == "start") {
     intervalometer.start(msg);
   } else if (command == "stop") {
-    intervalometer.stop();
+    if (intervalometer.isStopping) {
+      // If we've already been told to stop, stop immediately
+      intervalometer.stop();
+    } else {
+      // If not already stopping, start a "soft stop"
+      intervalometer.stopAfterLast();
+    }
   } else if (command == "triggerShutter") {
     intervalometer.camera.triggerShutter();
   } else if (command == "pressShutter") {

@@ -83,7 +83,9 @@
     />
     seconds
   </label>
-  {#if $state.isRunning}
+  {#if $state.isStopping}
+    <button class="inverse" on:click={stop}> Stop immediately </button>
+  {:else if $state.isRunning}
     <button class="inverse" on:click={stop}> Stop </button>
   {:else}
     <!-- TODO: Add some basic validation -->
@@ -92,6 +94,8 @@
 
   {#if isUpdating}
     <p>Loading...</p>
+  {:else if $state.isStopping}
+    <p>Intervalometer stopping after last action...</p>
   {:else if $state.isRunning}
     <p>Intervalometer running...</p>
   {:else}

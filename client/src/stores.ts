@@ -1,6 +1,5 @@
-import type { Action } from "./lib/actions";
-
 import { writable } from "svelte/store";
+import type { Action } from "./lib/actions";
 
 export const isConnected = writable(false);
 export const espIP = writable("192.168.4.1");
@@ -12,6 +11,7 @@ export const state = writable({
   cameraConnected: false,
   intervalSec: 35.0,
   isRunning: false,
+  isStopping: false,
   cameraIP: "192.168.4.7",
   numShots: 0,
   timeUntilNext: 0,
