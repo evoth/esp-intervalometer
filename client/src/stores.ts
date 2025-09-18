@@ -16,6 +16,7 @@ export const state = writable({
   numShots: 0,
   timeUntilNext: 0,
   duration: 0,
+  repetitions: 0,
   timeUntilCompletion: 0,
   shutterIsPressed: false,
   actions: [],

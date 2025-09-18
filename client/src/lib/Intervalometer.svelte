@@ -5,10 +5,12 @@
   let intervalSec: number | undefined;
   let isUpdating: boolean | undefined;
   let duration: number | undefined;
+  let repetitions: number | undefined;
 
   state.subscribe((value) => {
     intervalSec = value.intervalSec || intervalSec;
     duration = value.duration || duration;
+    repetitions = value.repetitions || repetitions;
   });
   isLoading.subscribe((value) => (isUpdating = value && isUpdating));
 
@@ -46,6 +48,7 @@
         command: "start",
         intervalSec,
         duration,
+        repetitions,
         sequence,
         actions: $actions,
       })
@@ -82,6 +85,16 @@
       placeholder="Duration in seconds"
     />
     seconds
+  </label>
+  <label>
+    Repetitions:
+    <input
+      type="number"
+      step="any"
+      min="0"
+      bind:value={repetitions}
+      placeholder="Number of repetitions"
+    />
   </label>
   {#if $state.isStopping}
     <button class="inverse" on:click={stop}> Stop immediately </button>

@@ -35,7 +35,8 @@ void Intervalometer::action() {
   if (actionIndex >= sequence.size()) {
     numShots++;
     actionIndex = -1;
-    if (isStopping) {
+    if (isStopping || (repetitions > 0 && numShots >= repetitions) ||
+        intervalSec == 0) {
       stop();
       return;
     }
@@ -69,6 +70,7 @@ void Intervalometer::start(JsonDocument doc) {
   nextTime = cycleTime = startTime = millis();
   intervalSec = doc["intervalSec"];
   duration = doc["duration"];
+  repetitions = doc["repetitions"];
   numShots = 0;
   isRunning = true;
   isStopping = false;
@@ -87,8 +89,8 @@ void Intervalometer::stop() {
 }
 
 void Intervalometer::stopAfterLast() {
-  if (actionIndex == -1) {
-    // We're after the last action but before the first action
+  // Stop immediately if after last action or already stopping
+  if (actionIndex == -1 || isStopping) {
     stop();
     return;
   }

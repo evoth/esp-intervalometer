@@ -21,6 +21,7 @@ class Intervalometer {
   IR ir;
   float intervalSec = 0;
   int numShots = 0;
+  int repetitions = 0;
   bool isRunning = false;
   bool isStopping = false;
   JsonDocument actions;

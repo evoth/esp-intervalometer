@@ -34,7 +34,7 @@
     Status message: {$state.statusMsg}
   </p>
   <p>
-    Completed repetitions: {$state.numShots}
+    Completed repetitions: {$state.numShots}{#if $state.repetitions > 0}/{$state.repetitions}{/if}
     Next action index: {$state.actionIndex == -1
       ? 1
       : $state.actionIndex + 1}/{$state.actions.length}
