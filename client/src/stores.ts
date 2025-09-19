@@ -9,17 +9,13 @@ export const state = writable({
   sec: 0,
   ms: 0,
   cameraConnected: false,
-  intervalSec: 35.0,
   isRunning: false,
   isStopping: false,
   cameraIP: "192.168.4.7",
-  numShots: 0,
   timeUntilNext: 0,
-  duration: 0,
-  repetitions: 0,
-  timeUntilCompletion: 0,
   shutterIsPressed: false,
   actions: [],
+  loops: [],
   actionIndex: 0,
 });
 export const isLoading = writable(false);

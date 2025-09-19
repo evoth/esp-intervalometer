@@ -11,17 +11,12 @@ unsigned long Intervalometer::timeUntilNext() {
   return nextTime - current;
 }
 
-// Time until completion in milliseconds (clamped at 0)
-unsigned long Intervalometer::timeUntilCompletion() {
-  unsigned long timeSinceStart = millis() - startTime;
-  if (timeSinceStart >= duration * 1000)
-    return 0;
-  return (duration * 1000) - timeSinceStart;
-}
-
 void Intervalometer::action() {
+  bool endLoop = false;
+
   if (actionIndex >= 0 && actionIndex < sequence.size()) {
     String actionType = sequence[actionIndex]["actionType"];
+    String actionName = sequence[actionIndex]["actionName"];
     if (actionType == "CCAPI") {
       camera.executeAction(sequence[actionIndex]["actionName"],
                            sequence[actionIndex]["httpMethod"],
@@ -31,39 +26,68 @@ void Intervalometer::action() {
       ir.trigger();
     } else if (actionType == "SERIAL") {
       String actionText;
-      String actionName = sequence[actionIndex]["actionName"];
       serializeJson(sequence[actionIndex], actionText);
       Serial.println(actionText);
       statusCode = 200;
       snprintf(statusMsg, sizeof(statusMsg),
                "Successfully sent '%s' action via serial.", actionName.c_str());
+    } else if (actionType == "CONTROL") {
+      if (actionName == "Loop") {
+        loops.push_back(Loop(actionIndex + 1,
+                             sequence[actionIndex]["body"]["duration"],
+                             sequence[actionIndex]["body"]["repetitions"]));
+        statusCode = 200;
+        snprintf(statusMsg, sizeof(statusMsg), "Started loop ID=%d",
+                 actionIndex + 1);
+      } else if (actionName == "End loop") {
+        endLoop = true;
+      }
     }
   }
   actionIndex++;
 
-  if (actionIndex >= sequence.size()) {
-    // TODO: Remove weird limbo after end of loop; we're removing interval and
-    // relying on end loop action
+  if (loops.empty()) {
+    stop();
+    return;
+  }
 
-    // TODO: Store start time for each loop
-    numShots++;
-    actionIndex = -1;
-    if (isStopping || (repetitions > 0 && numShots >= repetitions)) {
+  Loop& currentLoop = loops.back();
+
+  if (actionIndex >= sequence.size() || endLoop) {
+    currentLoop.completedReps++;
+
+    if (isStopping) {
       stop();
       return;
     }
-    cycleTime += intervalSec * 1000;
-    if (millis() > cycleTime)
-      cycleTime = millis();
-    nextTime = cycleTime;
-  } else {
-    String timeMode = sequence[actionIndex]["timeMode"];
-    float timeOffset = sequence[actionIndex]["time"];
-    if (timeMode == "after previous") {
-      nextTime = millis() + timeOffset * 1000;
+
+    if ((currentLoop.repetitions > 0 &&
+         currentLoop.completedReps >= currentLoop.repetitions) ||
+        (currentLoop.duration > 0 &&
+         millis() - currentLoop.startTime >= currentLoop.duration * 1000)) {
+      loops.pop_back();
+      statusCode = 0;
+      snprintf(statusMsg, sizeof(statusMsg), "Ending loop...", actionIndex + 1);
     } else {
-      nextTime = cycleTime + timeOffset * 1000;
+      actionIndex = currentLoop.startIndex;
+      currentLoop.cycleTime = millis();
+      statusCode = 0;
+      snprintf(statusMsg, sizeof(statusMsg), "Restarting loop...",
+               actionIndex + 1);
     }
+  }
+
+  if (actionIndex >= sequence.size() || loops.empty()) {
+    stop();
+    return;
+  }
+
+  String timeMode = sequence[actionIndex]["timeMode"];
+  float timeOffset = sequence[actionIndex]["time"];
+  if (timeMode == "after previous") {
+    nextTime = millis() + timeOffset * 1000;
+  } else {
+    nextTime = loops.back().cycleTime + timeOffset * 1000;
   }
 
   sendStatus();
@@ -78,12 +102,10 @@ void Intervalometer::start(JsonDocument doc) {
   }
 
   actionIndex = -1;
+  loops.clear();
+  loops.push_back(Loop(0, 0, 1));
 
-  nextTime = cycleTime = startTime = millis();
-  intervalSec = doc["intervalSec"];
-  duration = doc["duration"];
-  repetitions = doc["repetitions"];
-  numShots = 0;
+  nextTime = millis();
   isRunning = true;
   isStopping = false;
 
@@ -93,7 +115,6 @@ void Intervalometer::start(JsonDocument doc) {
 void Intervalometer::stop() {
   isRunning = false;
   isStopping = false;
-  startTime = 0;
   statusCode = 200;
   snprintf(statusMsg, sizeof(statusMsg),
            "Intervalometer stopped successfully.");
@@ -117,10 +138,6 @@ void Intervalometer::stopAfterLast() {
 void Intervalometer::loop() {
   if (!isRunning)
     return;
-  if (duration > 0 && timeUntilCompletion() <= 0) {
-    stopAfterLast();
-    return;
-  }
   if (timeUntilNext() > 0)
     return;
   action();

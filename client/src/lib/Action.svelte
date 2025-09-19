@@ -65,7 +65,7 @@
           {fieldKey}
           <input
             type="number"
-            step="any"
+            step={actionDef.fields[fieldKey].step ?? "any"}
             min={actionDef.fields[fieldKey].min}
             max={actionDef.fields[fieldKey].max}
             bind:value={action.fields[fieldKey]}

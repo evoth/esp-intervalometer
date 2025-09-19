@@ -9,6 +9,7 @@ type NumericalField = {
   type: "numerical";
   min?: number;
   max?: number;
+  step?: number;
   placeholder?: string;
   units?: string;
 };
@@ -300,18 +301,10 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
     actionType: "CONTROL",
     staticFields: {},
     body: {
-      intervalSec: 0,
       duration: 0,
       repetitions: 0,
     },
     fields: {
-      Interval: {
-        key: "intervalSec",
-        type: "numerical",
-        min: 0,
-        placeholder: "Interval in seconds",
-        units: "seconds",
-      },
       Duration: {
         key: "duration",
         type: "numerical",
@@ -324,10 +317,11 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
         type: "numerical",
         min: 0,
         placeholder: "Number of repetitions",
+        step: 1,
       },
     },
   },
-  "End Loop": {
+  "End loop": {
     actionType: "CONTROL",
     staticFields: {},
     body: {},

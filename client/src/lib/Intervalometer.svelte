@@ -2,16 +2,8 @@
   import { actions, isLoading, socket, state } from "../stores.js";
   import { ACTIONS_DEF } from "./actions.js";
   import Section from "./Section.svelte";
-  let intervalSec: number | undefined;
   let isUpdating: boolean | undefined;
-  let duration: number | undefined;
-  let repetitions: number | undefined;
 
-  state.subscribe((value) => {
-    intervalSec = value.intervalSec || intervalSec;
-    duration = value.duration || duration;
-    repetitions = value.repetitions || repetitions;
-  });
   isLoading.subscribe((value) => (isUpdating = value && isUpdating));
 
   const start = () => {
@@ -27,7 +19,7 @@
         actionType: actionDef.actionType,
         time: action.time,
         timeMode: action.timeMode,
-        body: JSON.stringify(body),
+        body,
         ...actionDef.staticFields,
       });
     }
@@ -35,9 +27,6 @@
     $socket.send(
       JSON.stringify({
         command: "start",
-        intervalSec,
-        duration,
-        repetitions,
         sequence,
         actions: $actions,
       })
@@ -53,38 +42,6 @@
 
 <Section name="intervalometer">
   <h2 slot="heading">Intervalometer</h2>
-  <label>
-    Interval:
-    <input
-      type="number"
-      step="any"
-      min="1"
-      bind:value={intervalSec}
-      placeholder="Interval in seconds"
-    />
-    seconds
-  </label>
-  <label>
-    Duration:
-    <input
-      type="number"
-      step="any"
-      min="0"
-      bind:value={duration}
-      placeholder="Duration in seconds"
-    />
-    seconds
-  </label>
-  <label>
-    Repetitions:
-    <input
-      type="number"
-      step="any"
-      min="0"
-      bind:value={repetitions}
-      placeholder="Number of repetitions"
-    />
-  </label>
   {#if $state.isStopping}
     <button class="inverse" on:click={stop}> Stop immediately </button>
   {:else if $state.isRunning}

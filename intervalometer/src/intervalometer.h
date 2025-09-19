@@ -3,13 +3,31 @@
 
 #include <ArduinoJson.h>
 #include <functional>
+#include <vector>
 #include "camera.h"
 #include "ir.h"
+
+struct Loop {
+  int startIndex;
+  unsigned long startTime;
+  unsigned long cycleTime;
+  float duration;
+  int repetitions;
+  int completedReps;
+
+  Loop(int startIndex, float duration, int repetitions)
+      : startIndex(startIndex),
+        startTime(millis()),
+        cycleTime(millis()),
+        duration(duration),
+        repetitions(repetitions),
+        completedReps(0) {}
+};
 
 class Intervalometer {
  public:
   Intervalometer(std::function<void()> sendStatus)
-      : ir(13), sendStatus(sendStatus) {
+      : ir(13), loops(), sendStatus(sendStatus) {
     deserializeJson(
         actions,
         "[{\"action\":\"Trigger "
@@ -19,27 +37,21 @@ class Intervalometer {
 
   CCAPI camera;
   IR ir;
-  float intervalSec = 0;
-  int numShots = 0;
-  int repetitions = 0;
   bool isRunning = false;
   bool isStopping = false;
   JsonDocument actions;
   JsonDocument sequence;
   int actionIndex = 0;
+  std::vector<Loop> loops;
 
   unsigned long timeUntilNext();
-  unsigned long timeUntilCompletion();
   void start(JsonDocument doc);
   void stop();
   void stopAfterLast();
   void loop();
 
  private:
-  float duration = 0;
   unsigned long nextTime = 0;
-  unsigned long startTime = 0;
-  unsigned long cycleTime = 0;
   std::function<void()> sendStatus;
 
   void action();

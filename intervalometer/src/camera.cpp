@@ -106,11 +106,17 @@ void CCAPI::releaseShutter() {
 }
 
 // Sends a POST request to simulate releasing the shutter
-void CCAPI::executeAction(String name, String method, String url, String body) {
+void CCAPI::executeAction(String name,
+                          String method,
+                          String url,
+                          JsonObject body) {
   char endpointUrl[128];
   snprintf(endpointUrl, sizeof(endpointUrl), "%s%s", apiUrl, url.c_str());
 
-  if (request(method.c_str(), endpointUrl, body.c_str()) != HTTP_CODE_OK)
+  String bodyString;
+  serializeJson(body, bodyString);
+
+  if (request(method.c_str(), endpointUrl, bodyString.c_str()) != HTTP_CODE_OK)
     return;
 
   snprintf(statusMsg, sizeof(statusMsg), "Successfully executed '%s' action.",
