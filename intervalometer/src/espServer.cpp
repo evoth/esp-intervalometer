@@ -6,7 +6,11 @@
 #include "status.h"
 
 void ESPServer::initAP() {
-  const char* ssid = "ESP8266_AP";
+  const char* macAddress = WiFi.macAddress().c_str();
+  char ssid[18];
+  snprintf(ssid, sizeof(ssid), "ESP8266_AP_%c%c%c%c%c%c", macAddress[9],
+           macAddress[10], macAddress[12], macAddress[13], macAddress[15],
+           macAddress[16]);
   const char* password = "defgecd7";
 
   Serial.print("Starting soft-AP... ");
