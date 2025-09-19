@@ -43,7 +43,7 @@
       Time in loop: {((timeNow - loop.startTime) / 1000).toFixed(
         1
       )}{#if loop.duration > 0}/{loop.duration}{/if}
-      Time in cycle: {((timeNow - loop.startTime) / 1000).toFixed(1)}
+      Time in cycle: {((timeNow - loop.cycleTime) / 1000).toFixed(1)}
       Number of cycles: {loop.completedReps}{#if loop.repetitions > 0}/{loop.repetitions}{/if}
     </p>
   {/each}
