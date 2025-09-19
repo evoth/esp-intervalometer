@@ -22,25 +22,14 @@
       for (const fieldName in action.fields) {
         body[actionDef.fields[fieldName].key] = action.fields[fieldName];
       }
-      if (actionDef.actionType === "CCAPI") {
-        sequence.push({
-          name: action.action,
-          actionType: actionDef.actionType,
-          time: action.time,
-          timeMode: action.timeMode,
-          endpointUrl: actionDef.endpointUrl,
-          httpMethod: actionDef.httpMethod,
-          body: JSON.stringify(body),
-        });
-      } else {
-        sequence.push({
-          name: action.action,
-          actionType: actionDef.actionType,
-          time: action.time,
-          timeMode: action.timeMode,
-          body: JSON.stringify(body),
-        });
-      }
+      sequence.push({
+        actionName: action.action,
+        actionType: actionDef.actionType,
+        time: action.time,
+        timeMode: action.timeMode,
+        body: JSON.stringify(body),
+        ...actionDef.staticFields,
+      });
     }
 
     $socket.send(

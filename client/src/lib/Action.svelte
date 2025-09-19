@@ -53,12 +53,27 @@
   </div>
   {#each Object.keys(action.fields) as fieldKey}
     <div>
-      <SelectDropdown
-        label={fieldKey}
-        buttonTitle={"Choose value for" + fieldKey}
-        bind:value={action.fields[fieldKey]}
-        options={actionDef.fields[fieldKey].options}
-      />
+      {#if actionDef.fields[fieldKey].type === "enum"}
+        <SelectDropdown
+          label={fieldKey}
+          buttonTitle={"Choose value for" + fieldKey}
+          bind:value={action.fields[fieldKey]}
+          options={actionDef.fields[fieldKey].options}
+        />
+      {:else if actionDef.fields[fieldKey].type === "numerical"}
+        <label>
+          {fieldKey}
+          <input
+            type="number"
+            step="any"
+            min={actionDef.fields[fieldKey].min}
+            max={actionDef.fields[fieldKey].max}
+            bind:value={action.fields[fieldKey]}
+            placeholder={actionDef.fields[fieldKey].placeholder}
+          />
+          {actionDef.fields[fieldKey].units ?? ""}
+        </label>
+      {/if}
     </div>
   {/each}
 </div>

@@ -23,20 +23,32 @@ void Intervalometer::action() {
   if (actionIndex >= 0 && actionIndex < sequence.size()) {
     String actionType = sequence[actionIndex]["actionType"];
     if (actionType == "CCAPI") {
-      camera.executeAction(
-          sequence[actionIndex]["name"], sequence[actionIndex]["httpMethod"],
-          sequence[actionIndex]["endpointUrl"], sequence[actionIndex]["body"]);
+      camera.executeAction(sequence[actionIndex]["actionName"],
+                           sequence[actionIndex]["httpMethod"],
+                           sequence[actionIndex]["endpointUrl"],
+                           sequence[actionIndex]["body"]);
     } else if (actionType == "IR_TRIGGER") {
       ir.trigger();
+    } else if (actionType == "SERIAL") {
+      String actionText;
+      String actionName = sequence[actionIndex]["actionName"];
+      serializeJson(sequence[actionIndex], actionText);
+      Serial.println(actionText);
+      statusCode = 200;
+      snprintf(statusMsg, sizeof(statusMsg),
+               "Successfully sent '%s' action via serial.", actionName.c_str());
     }
   }
   actionIndex++;
 
   if (actionIndex >= sequence.size()) {
+    // TODO: Remove weird limbo after end of loop; we're removing interval and
+    // relying on end loop action
+
+    // TODO: Store start time for each loop
     numShots++;
     actionIndex = -1;
-    if (isStopping || (repetitions > 0 && numShots >= repetitions) ||
-        intervalSec == 0) {
+    if (isStopping || (repetitions > 0 && numShots >= repetitions)) {
       stop();
       return;
     }

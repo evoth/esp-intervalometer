@@ -1,15 +1,26 @@
-type ActionDef =
-  | (
-      | {
-          actionType: "CCAPI";
-          endpointUrl: string;
-          httpMethod: "POST" | "PUT";
-        }
-      | { actionType: "IR_TRIGGER" }
-    ) & {
-      body: any;
-      fields: Record<string, { key: string; options: string[] }>;
-    };
+type EnumField = {
+  key: string;
+  type: "enum";
+  options: string[];
+};
+
+type NumericalField = {
+  key: string;
+  type: "numerical";
+  min?: number;
+  max?: number;
+  placeholder?: string;
+  units?: string;
+};
+
+type ActionField = EnumField | NumericalField;
+
+type ActionDef = {
+  actionType: "CCAPI" | "IR_TRIGGER" | "SERIAL" | "CONTROL";
+  body: any;
+  staticFields: Record<string, any>;
+  fields: Record<string, ActionField>;
+};
 
 // export type ActionKey = keyof typeof ACTIONS_DEF;
 
@@ -34,8 +45,10 @@ export type Action = {
 export const ACTIONS_DEF: Record<string, ActionDef> = {
   "Trigger shutter": {
     actionType: "CCAPI",
-    endpointUrl: "/ver100/shooting/control/shutterbutton",
-    httpMethod: "POST",
+    staticFields: {
+      endpointUrl: "/ver100/shooting/control/shutterbutton",
+      httpMethod: "POST",
+    },
     body: {
       af: false,
     },
@@ -43,8 +56,10 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
   },
   "Control shutter": {
     actionType: "CCAPI",
-    endpointUrl: "/ver100/shooting/control/shutterbutton/manual",
-    httpMethod: "POST",
+    staticFields: {
+      endpointUrl: "/ver100/shooting/control/shutterbutton/manual",
+      httpMethod: "POST",
+    },
     body: {
       action: "full_press",
       af: false,
@@ -52,20 +67,24 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
     fields: {
       Action: {
         key: "action",
+        type: "enum",
         options: ["full_press", "release"],
       },
     },
   },
   "Set ISO": {
     actionType: "CCAPI",
-    endpointUrl: "/ver100/shooting/settings/iso",
-    httpMethod: "PUT",
+    staticFields: {
+      endpointUrl: "/ver100/shooting/settings/iso",
+      httpMethod: "PUT",
+    },
     body: {
       value: "400",
     },
     fields: {
       ISO: {
         key: "value",
+        type: "enum",
         options: [
           "auto",
           "100",
@@ -99,14 +118,17 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
   },
   "Set aperture": {
     actionType: "CCAPI",
-    endpointUrl: "/ver100/shooting/settings/av",
-    httpMethod: "PUT",
+    staticFields: {
+      endpointUrl: "/ver100/shooting/settings/av",
+      httpMethod: "PUT",
+    },
     body: {
       value: "f8.0",
     },
     fields: {
       Aperture: {
         key: "value",
+        type: "enum",
         options: [
           "f3.5",
           "f4.0",
@@ -131,14 +153,17 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
   },
   "Set shutter speed": {
     actionType: "CCAPI",
-    endpointUrl: "/ver100/shooting/settings/tv",
-    httpMethod: "PUT",
+    staticFields: {
+      endpointUrl: "/ver100/shooting/settings/tv",
+      httpMethod: "PUT",
+    },
     body: {
       value: "1/125",
     },
     fields: {
       "Shutter speed": {
         key: "value",
+        type: "enum",
         options: [
           "1/4000",
           "1/3200",
@@ -199,14 +224,17 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
   },
   "Set exposure compensation": {
     actionType: "CCAPI",
-    endpointUrl: "/ver100/shooting/settings/exposure",
-    httpMethod: "PUT",
+    staticFields: {
+      endpointUrl: "/ver100/shooting/settings/exposure",
+      httpMethod: "PUT",
+    },
     body: {
       value: "+0.0",
     },
     fields: {
       EV: {
         key: "value",
+        type: "enum",
         options: [
           "-3.0",
           "-2_2/3",
@@ -233,20 +261,75 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
   },
   "Set shooting mode": {
     actionType: "CCAPI",
-    endpointUrl: "/ver100/shooting/settings/shootingmode",
-    httpMethod: "PUT",
+    staticFields: {
+      endpointUrl: "/ver100/shooting/settings/shootingmode",
+      httpMethod: "PUT",
+    },
     body: {
       value: "m",
     },
     fields: {
       Mode: {
         key: "value",
+        type: "enum",
         options: ["m", "av", "tv", "p", "auto"],
       },
     },
   },
   "Canon IR Trigger": {
     actionType: "IR_TRIGGER",
+    staticFields: {},
+    body: {},
+    fields: {},
+  },
+  "Dark frame cover": {
+    actionType: "SERIAL",
+    staticFields: {},
+    body: {
+      action: "close",
+    },
+    fields: {
+      Action: {
+        key: "action",
+        type: "enum",
+        options: ["open", "close"],
+      },
+    },
+  },
+  Loop: {
+    actionType: "CONTROL",
+    staticFields: {},
+    body: {
+      intervalSec: 0,
+      duration: 0,
+      repetitions: 0,
+    },
+    fields: {
+      Interval: {
+        key: "intervalSec",
+        type: "numerical",
+        min: 0,
+        placeholder: "Interval in seconds",
+        units: "seconds",
+      },
+      Duration: {
+        key: "duration",
+        type: "numerical",
+        min: 0,
+        placeholder: "Duration in seconds",
+        units: "seconds",
+      },
+      Repetitions: {
+        key: "repetitions",
+        type: "numerical",
+        min: 0,
+        placeholder: "Number of repetitions",
+      },
+    },
+  },
+  "End Loop": {
+    actionType: "CONTROL",
+    staticFields: {},
     body: {},
     fields: {},
   },
