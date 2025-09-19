@@ -327,4 +327,30 @@ export const ACTIONS_DEF: Record<string, ActionDef> = {
     body: {},
     fields: {},
   },
+  "Device power": {
+    actionType: "SERIAL",
+    staticFields: {},
+    body: {
+      device: "AZ-GTe mount",
+      action: "turn off",
+    },
+    fields: {
+      Device: {
+        key: "device",
+        type: "enum",
+        options: [
+          "12V output",
+          "AZ-GTe mount",
+          "USB port 1",
+          "USB port 2",
+          "Servo motor",
+        ],
+      },
+      Action: {
+        key: "action",
+        type: "enum",
+        options: ["turn on", "turn off"],
+      },
+    },
+  },
 };
