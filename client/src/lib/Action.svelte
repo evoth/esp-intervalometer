@@ -5,6 +5,7 @@
   export let action: Action;
   export let index;
   export let deleteAction;
+  export let moveAction;
 
   const actionDef = ACTIONS_DEF[action.action];
 </script>
@@ -12,7 +13,34 @@
 <div class="container">
   <div class="heading">
     <h3>{index + 1}. {action.action}</h3>
-    <button class="delete-container" on:click={deleteAction}>
+    <div style="flex: 1"></div>
+    <button class="icon-container" on:click={() => moveAction(action, -1)}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"><path d="M18 15l-6-6-6 6" /></svg
+      >
+    </button>
+    <button class="icon-container" on:click={() => moveAction(action, 1)}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"><path d="M6 9l6 6 6-6" /></svg
+      >
+    </button>
+    <button class="icon-container" on:click={deleteAction}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -85,6 +113,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    gap: 8px;
   }
 
   .container {
@@ -97,7 +126,7 @@
     transition: background-color 0.2s;
   }
 
-  .delete-container {
+  .icon-container {
     padding: 4px 4px;
     display: flex;
     align-items: center;
