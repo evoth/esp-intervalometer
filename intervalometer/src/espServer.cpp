@@ -55,6 +55,7 @@ void ESPServer::sendStatus() {
   status["statusMsg"] = statusMsg;
   status["sec"] = now();
   status["ms"] = millisecond();
+  status["millis"] = millis();
   status["cameraConnected"] = intervalometer.camera.connected;
   status["cameraIP"] = intervalometer.camera.cameraIP;
   status["isRunning"] = intervalometer.isRunning;
@@ -63,7 +64,18 @@ void ESPServer::sendStatus() {
   status["shutterIsPressed"] = intervalometer.camera.shutterIsPressed;
   status["actions"] = intervalometer.actions;
   status["actionIndex"] = intervalometer.actionIndex;
-  // TODO: Loops
+  JsonDocument loopsDoc;
+  JsonArray loopsArray = loopsDoc.to<JsonArray>();
+  for (const Loop& loop : intervalometer.loops) {
+    JsonObject obj = loopsArray.add<JsonObject>();
+    obj["startIndex"] = loop.startIndex;
+    obj["startTime"] = loop.startTime;
+    obj["cycleTime"] = loop.cycleTime;
+    obj["duration"] = loop.duration;
+    obj["repetitions"] = loop.repetitions;
+    obj["completedReps"] = loop.completedReps;
+  }
+  status["loops"] = loopsArray;
   String statusText;
   serializeJson(status, statusText);
   Serial.println(statusText);

@@ -19,7 +19,13 @@
     $socket = new WebSocket(`ws://${$espIP}:81`);
     $socket.addEventListener("message", (event) => {
       numUpdates++;
-      $state = JSON.parse(event.data);
+      const stateJson = JSON.parse(event.data);
+      for (const loop of stateJson.loops) {
+        const now = Date.now();
+        loop.startTime = now - (stateJson.millis - loop.startTime);
+        loop.cycleTime = now - (stateJson.millis - loop.cycleTime);
+      }
+      $state = stateJson;
       if (numUpdates == 1) $actions = $state.actions;
       $isLoading = false;
     });

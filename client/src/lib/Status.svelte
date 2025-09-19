@@ -4,13 +4,14 @@
 
   let timeReceived = Date.now();
   let timeUntilNext = 0;
-  // TODO: Add time elapsed for loops, similar to repetitions
+  let timeNow = Date.now();
   let interval: number | undefined;
   state.subscribe((value) => {
     timeReceived = Date.now();
     clearInterval(interval);
     if (value.isRunning) {
       interval = setInterval(() => {
+        timeNow = Date.now();
         timeUntilNext =
           ($state.timeUntilNext - (Date.now() - timeReceived)) / 1000;
       }, 100);
@@ -31,10 +32,19 @@
     Status message: {$state.statusMsg}
   </p>
   <p>
-    <!-- Completed repetitions: {$state.numShots}{#if $state.repetitions > 0}/{$state.repetitions}{/if} -->
     Next action index: {$state.actionIndex == -1
       ? 1
       : $state.actionIndex + 1}/{$state.actions.length}
     Time until next action: {timeUntilNext.toFixed(1)}
   </p>
+  {#each $state.loops as loop}
+    <p>
+      <strong>Loop {loop.startIndex}</strong>
+      Time in loop: {((timeNow - loop.startTime) / 1000).toFixed(
+        1
+      )}{#if loop.duration > 0}/{loop.duration}{/if}
+      Time in cycle: {((timeNow - loop.startTime) / 1000).toFixed(1)}
+      Number of cycles: {loop.completedReps}{#if loop.repetitions > 0}/{loop.repetitions}{/if}
+    </p>
+  {/each}
 </Section>
